@@ -9,7 +9,7 @@ export default function About() {
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
           <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
-            02 — Nosotros
+            02 — Sobre Nosotros
           </span>
           <div className="flex-1 h-px bg-white/10" />
         </div>
