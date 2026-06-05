@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums basados en el diseño de BD
+enum Ministerio {
+  cas
+  uni
+  pro
+  mercy
+}
+
+enum RolUsuario {
+  admin
+  user
+  lider
+}
+
+enum ModalidadCita {
+  presencial
+  virtual
+}
+
+enum EstadoCita {
+  pendiente
+  confirmada
+  completada
+  cancelada
+}
+
+// Modelos
+model Lugar {
+  id_lugar  Int      @id @default(autoincrement())
+  ubicacion String
+  eventos   Evento[]
+}
+
+model Evento {
+  id_eventos  Int        @id @default(autoincrement())
+  ministerios Ministerio
+  id_lugar    Int
+  nombre      String
+  descripcion String?
+  hora        String
+  fecha       DateTime
+
+  lugar       Lugar      @relation(fields: [id_lugar], references: [id_lugar])
+}
+
+model Usuario {
+  id_usuario  Int        @id @default(autoincrement())
+  contrasena  String     // Guardar encriptada (bcrypt)
+  email       String     @unique
+  telefono    String?
+  nombre      String
+  apellido    String
+  ubicacion   String?
+  suscripcion Boolean    @default(false)
+  rol         RolUsuario @default(user)
+
+  // Relaciones para Citas Bíblicas (Doble relación)
+  citasComoUsuario CitaBiblica[] @relation("UsuarioAsistente")
+  citasComoLider   CitaBiblica[] @relation("UsuarioLider")
+}
+
+model CitaBiblica {
+  id_cita          Int           @id @default(autoincrement())
+  id_usuario_user  Int
+  id_usuario_lider Int
+  hora             String
+  fecha            DateTime
+  modalidad        ModalidadCita
+  estado           EstadoCita    @default(pendiente)
+  descripcion      String?
+
+  usuario          Usuario       @relation("UsuarioAsistente", fields: [id_usuario_user], references: [id_usuario])
+  lider            Usuario       @relation("UsuarioLider", fields: [id_usuario_lider], references: [id_usuario])
+}
+
+model Suscriptor {
+  id_suscripcion Int     @id @default(autoincrement())
+  nombre         String
+  email          String  @unique
+  estado         Boolean @default(true)
+}
