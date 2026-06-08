@@ -23,18 +23,6 @@ const ministerios = [
     desc: "Construir un matrimonio que dure. Sin frases hechas.",
     img: "https://images.unsplash.com/photo-1529539795054-3c162aab037a?w=800&q=80",
   },
-  {
-    label: "Jóvenes",
-    age: "13 — 17",
-    desc: "Espacio seguro, música fuerte, conversaciones honestas.",
-    img: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800&q=80",
-  },
-  {
-    label: "Niños",
-    age: "0 — 12",
-    desc: "Aprenden, juegan, crecen. Mientras tú estás en el servicio.",
-    img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80",
-  },
 ];
 
 export default function Ministerios() {
