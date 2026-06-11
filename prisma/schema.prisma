@@ -63,3 +63,18 @@ enum EstadoReserva {
   COMPLETADA
   CANCELADA
 }
+
+model Evento {
+  id          String   @id @default(uuid())
+  titulo      String
+  descripcion String
+  fecha       DateTime
+  ubicacion   String
+  latitud     Float?   // Para la geolocalización en Google Maps (PB-019)
+  longitud    Float?   // Para la geolocalización en Google Maps (PB-019)
+  responsable String
+  tipo        String   // Ej: "Dominical", "Ministerial", "Universitario", "Charla", "Especial"
+  publicado   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
