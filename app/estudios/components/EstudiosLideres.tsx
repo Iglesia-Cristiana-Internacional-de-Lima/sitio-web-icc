@@ -2,74 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Calendar, MapPin, Clock, ArrowRight, X, CheckCircle, Shuffle, MessageCircle } from "lucide-react";
 import type { Lider, LiderAPI, Modalidad, ReservaFormData, FormErrors, ReservaConfirmacion, ReservaAPIResponse } from "../types";
 import { validateReservaForm, hasErrors, asignarLiderAutomatico } from "../utils/validations";
+import { useSession } from "@/hooks/useSession";
 
-// Datos de respaldo (fallback) si la API no está disponible
-const lideresFallback: Lider[] = [
-  {
-    id: 1,
-    name: "Andrés Mendoza",
-    role: "Pastor Principal",
-    specialties: ["Fe y trabajo", "Matrimonio", "Liderazgo"],
-    availability: "Lunes a Viernes",
-    location: "Lima Centro / Online",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-    bio: "20 años acompañando personas en su camino de fe. Especializado en integrar la fe con la vida profesional.",
-  },
-  {
-    id: 2,
-    name: "Lucía Reyes",
-    role: "Pastora · San Isidro",
-    specialties: ["Mujeres", "Familia", "Crecimiento espiritual"],
-    availability: "Martes, Jueves, Sábados",
-    location: "San Isidro / Miraflores / Online",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
-    bio: "Apasionada por el discipulado de mujeres. Conversaciones honestas sobre fe, identidad y propósito.",
-  },
-  {
-    id: 3,
-    name: "Daniel Quispe",
-    role: "Pastor · Miraflores",
-    specialties: ["Jóvenes profesionales", "Dudas de fe", "Apologética"],
-    availability: "Miércoles a Sábados",
-    location: "Miraflores / La Molina / Online",
-    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
-    bio: "Ingeniero de formación. Experto en abordar preguntas difíciles sobre fe, ciencia y razón.",
-  },
-  {
-    id: 4,
-    name: "María Torres",
-    role: "Líder de Ministerios",
-    specialties: ["Universitarios", "Transiciones de vida", "Vocación"],
-    availability: "Lunes, Miércoles, Viernes",
-    location: "San Borja / Surco / Online",
-    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
-    bio: "Acompañando a jóvenes en sus primeros pasos de fe y grandes decisiones de vida.",
-  },
-  {
-    id: 5,
-    name: "Carlos Salazar",
-    role: "Pastor · Surco",
-    specialties: ["Hombres", "Paternidad", "Finanzas y fe"],
-    availability: "Martes, Jueves, Sábados",
-    location: "Surco / La Molina / Online",
-    img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
-    bio: "Conversaciones prácticas para hombres sobre lo que realmente importa.",
-  },
-  {
-    id: 6,
-    name: "Patricia Vega",
-    role: "Líder · Eventos",
-    specialties: ["Primera vez", "Exploración de fe", "Comunidad"],
-    availability: "Flexible",
-    location: "Todas las sedes / Online",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
-    bio: "Especializada en acompañar a personas que están conociendo la fe por primera vez.",
-  },
-];
-
+// ponytail: sin fallback hardcodeado, solo API
 const initialFormData: ReservaFormData = {
   nombre: "",
   contacto: "",
@@ -93,7 +32,9 @@ function normalizarLiderLocal(liderApi: LiderAPI): Lider {
 }
 
 export default function EstudiosLideres() {
-  const [lideres, setLideres] = useState<Lider[]>(lideresFallback);
+  const router = useRouter();
+  const { user, loading: sessionLoading } = useSession();
+  const [lideres, setLideres] = useState<Lider[]>([]);
   const [isLoadingLideres, setIsLoadingLideres] = useState(true);
   const [selectedLider, setSelectedLider] = useState<Lider | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -116,7 +57,7 @@ export default function EstudiosLideres() {
           }
         }
       } catch (error) {
-        console.log("Usando datos de respaldo para líderes");
+        console.error("Error cargando líderes:", error);
       } finally {
         setIsLoadingLideres(false);
       }
@@ -125,6 +66,10 @@ export default function EstudiosLideres() {
   }, []);
 
   const handleSelect = (lider: Lider) => {
+    if (!user) {
+      router.push(`/login?redirect=/estudios&liderId=${lider.id}`);
+      return;
+    }
     setSelectedLider(lider);
     setFormData({ ...initialFormData, liderId: lider.id });
     setErrors({});
@@ -133,6 +78,10 @@ export default function EstudiosLideres() {
   };
 
   const handleAutoAssign = () => {
+    if (!user) {
+      router.push("/login?redirect=/estudios&auto=1");
+      return;
+    }
     const liderAsignado = asignarLiderAutomatico(lideres);
     setSelectedLider(liderAsignado);
     setFormData({ ...initialFormData, liderId: liderAsignado.id });
@@ -162,10 +111,8 @@ export default function EstudiosLideres() {
   };
 
   const handleSubmit = async () => {
-    const validationErrors = validateReservaForm(formData);
-
-    if (hasErrors(validationErrors)) {
-      setErrors(validationErrors);
+    if (!formData.modalidad) {
+      setErrors({ modalidad: "Selecciona una modalidad" });
       return;
     }
 
@@ -175,12 +122,8 @@ export default function EstudiosLideres() {
     try {
       const response = await fetch("/api/estudios/reservar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nombre: formData.nombre,
-          contacto: formData.contacto,
           modalidad: formData.modalidad,
           mensaje: formData.mensaje,
           liderId: formData.liderId,
@@ -193,43 +136,17 @@ export default function EstudiosLideres() {
         setConfirmacion({
           success: true,
           lider: selectedLider!,
-          formData: formData,
+          formData: { ...formData, nombre: user!.nombre, contacto: user!.email },
           fechaRegistro: data.data.fechaRegistro,
           whatsappLink: data.data.whatsappLink,
           emailEnviado: data.data.emailEnviado,
         });
       } else {
-        // Si la API falla, usar modo fallback
-        setConfirmacion({
-          success: true,
-          lider: selectedLider!,
-          formData: formData,
-          fechaRegistro: new Date().toLocaleDateString("es-PE", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        });
+        setApiError(data.error || "Error al crear reserva");
       }
     } catch (error) {
-      // Modo fallback si la API no está disponible
-      console.log("API no disponible, usando modo offline");
-      setConfirmacion({
-        success: true,
-        lider: selectedLider!,
-        formData: formData,
-        fechaRegistro: new Date().toLocaleDateString("es-PE", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      });
+      setApiError("Error de conexión. Intenta de nuevo.");
+      console.error("API error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -265,6 +182,15 @@ export default function EstudiosLideres() {
         </div>
 
         {/* Leaders grid */}
+        {isLoadingLideres ? (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
+        ) : lideres.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-white/50">No hay líderes disponibles</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lideres.map((lider, i) => (
             <motion.div
@@ -326,31 +252,34 @@ export default function EstudiosLideres() {
             </motion.div>
           ))}
         </div>
+        )}
 
         {/* Auto-assign option */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-12 text-center"
-        >
-          <p className="text-white/50 text-sm mb-4">
-            No sabes con quién conversar?
-          </p>
-          <button
-            onClick={handleAutoAssign}
-            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 text-sm hover:bg-white/5 hover:border-white/30 transition-all"
+        {lideres.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-12 text-center"
           >
-            <Shuffle size={18} strokeWidth={1.5} />
-            Asignarme un líder automáticamente
-            <ArrowRight
-              size={16}
-              strokeWidth={1.5}
-              className="group-hover:translate-x-1 transition-transform"
-            />
-          </button>
-        </motion.div>
+            <p className="text-white/50 text-sm mb-4">
+              No sabes con quién conversar?
+            </p>
+            <button
+              onClick={handleAutoAssign}
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 text-sm hover:bg-white/5 hover:border-white/30 transition-all"
+            >
+              <Shuffle size={18} strokeWidth={1.5} />
+              Asignarme un líder automáticamente
+              <ArrowRight
+                size={16}
+                strokeWidth={1.5}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Booking Modal */}
@@ -473,40 +402,15 @@ export default function EstudiosLideres() {
             ) : (
               /* Form */
               <div className="p-8 space-y-6">
-                <div>
-                  <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                    Tu nombre *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ej: Juan Pérez"
-                    value={formData.nombre}
-                    onChange={(e) => handleInputChange("nombre", e.target.value)}
-                    className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none transition-colors ${
-                      errors.nombre ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-white/30"
-                    }`}
-                  />
-                  {errors.nombre && (
-                    <p className="text-red-400 text-xs mt-2">{errors.nombre}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                    Tu correo o WhatsApp *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ej: juan@correo.com o +51 999 999 999"
-                    value={formData.contacto}
-                    onChange={(e) => handleInputChange("contacto", e.target.value)}
-                    className={`w-full bg-white/5 border rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none transition-colors ${
-                      errors.contacto ? "border-red-500/50 focus:border-red-500" : "border-white/10 focus:border-white/30"
-                    }`}
-                  />
-                  {errors.contacto && (
-                    <p className="text-red-400 text-xs mt-2">{errors.contacto}</p>
-                  )}
+                {/* User info banner */}
+                <div className="bg-white/5 rounded-lg p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-medium">
+                    {user?.nombre?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-white text-sm">{user?.nombre}</p>
+                    <p className="text-white/50 text-xs">{user?.email}</p>
+                  </div>
                 </div>
 
                 <div>
@@ -560,6 +464,10 @@ export default function EstudiosLideres() {
                     {formData.mensaje.length}/500
                   </p>
                 </div>
+
+                {apiError && (
+                  <p className="text-red-400 text-sm text-center">{apiError}</p>
+                )}
 
                 <button
                   onClick={handleSubmit}

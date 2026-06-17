@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { enviarEmailConfirmacion } from "@/lib/email";
 import { generarLinkWhatsApp } from "@/lib/whatsapp";
+import { getSession } from "@/lib/auth";
 
-// Tipos para la solicitud
 interface ReservaRequest {
-  nombre: string;
-  contacto: string;
   modalidad: "presencial" | "online";
   mensaje?: string;
   liderId: number;
@@ -14,20 +12,14 @@ interface ReservaRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getSession();
     const body: ReservaRequest = await request.json();
 
-    // Validaciones básicas
-    if (!body.nombre || body.nombre.trim().length < 2) {
+    // Auth requerida
+    if (!session) {
       return NextResponse.json(
-        { error: "El nombre es requerido (mínimo 2 caracteres)" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.contacto || body.contacto.trim().length < 5) {
-      return NextResponse.json(
-        { error: "El contacto es requerido" },
-        { status: 400 }
+        { error: "Debes iniciar sesión para reservar" },
+        { status: 401 }
       );
     }
 
@@ -45,9 +37,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar que el líder existe
-    const lider = await prisma.lider.findUnique({
-      where: { id: body.liderId },
+    const lider = await prisma.usuario.findFirst({
+      where: { id: body.liderId, rol: { nombre: "LIDER" }, activo: true },
     });
 
     if (!lider) {
@@ -57,21 +48,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear la reserva
     const reserva = await prisma.reserva.create({
       data: {
-        nombre: body.nombre.trim(),
-        contacto: body.contacto.trim(),
+        solicitanteId: session.id,
         modalidad: body.modalidad.toUpperCase() as "PRESENCIAL" | "ONLINE",
         mensaje: body.mensaje?.trim() || null,
         liderId: body.liderId,
       },
       include: {
         lider: true,
+        solicitante: true,
       },
     });
 
-    // Generar fecha legible
     const fechaRegistro = new Date().toLocaleDateString("es-PE", {
       weekday: "long",
       year: "numeric",
@@ -81,32 +70,28 @@ export async function POST(request: NextRequest) {
       minute: "2-digit",
     });
 
-    // Enviar email de confirmación (si el contacto es email)
+    // Email de confirmación al usuario autenticado
     let emailEnviado = false;
-    if (body.contacto.includes("@")) {
-      const resultadoEmail = await enviarEmailConfirmacion({
-        nombreUsuario: body.nombre,
-        contactoUsuario: body.contacto,
-        nombreLider: lider.nombre,
-        modalidad: body.modalidad,
-        mensaje: body.mensaje,
-        fechaRegistro,
-      });
-      emailEnviado = resultadoEmail.success;
+    const resultadoEmail = await enviarEmailConfirmacion({
+      nombreUsuario: session.nombre,
+      contactoUsuario: session.email,
+      nombreLider: lider.nombre,
+      modalidad: body.modalidad,
+      mensaje: body.mensaje,
+      fechaRegistro,
+    });
+    emailEnviado = resultadoEmail.success;
 
-      // Actualizar estado de email en la reserva
-      if (emailEnviado) {
-        await prisma.reserva.update({
-          where: { id: reserva.id },
-          data: { emailEnviado: true },
-        });
-      }
+    if (emailEnviado) {
+      await prisma.reserva.update({
+        where: { id: reserva.id },
+        data: { emailEnviado: true },
+      });
     }
 
-    // Generar link de WhatsApp
     const whatsappLink = generarLinkWhatsApp({
       numero: process.env.WHATSAPP_NUMERO || "51999999999",
-      nombreUsuario: body.nombre,
+      nombreUsuario: session.nombre,
       nombreLider: lider.nombre,
       modalidad: body.modalidad,
     });
@@ -118,7 +103,7 @@ export async function POST(request: NextRequest) {
         lider: {
           id: lider.id,
           nombre: lider.nombre,
-          rol: lider.rol,
+          rol: lider.titulo,
         },
         modalidad: body.modalidad,
         fechaRegistro,
@@ -159,7 +144,14 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             nombre: true,
-            rol: true,
+            titulo: true,
+          },
+        },
+        solicitante: {
+          select: {
+            id: true,
+            nombre: true,
+            email: true,
           },
         },
       },

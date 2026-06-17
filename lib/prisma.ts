@@ -11,6 +11,9 @@ const pool =
   globalForPrisma.pool ||
   new pg.Pool({
     connectionString: process.env.DATABASE_URL,
+    max: 5, // Máximo de conexiones en el pool
+    idleTimeoutMillis: 30000, // Cerrar conexiones inactivas después de 30s
+    connectionTimeoutMillis: 10000, // Timeout de conexión de 10s
   });
 
 const adapter = new PrismaPg(pool);
