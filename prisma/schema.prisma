@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Evento {
+  descripcion String
+  fecha       DateTime
+  createdAt   DateTime @default(now())
+  id          String   @id
+  latitud     Float?
+  longitud    Float?
+  responsable String
+  tipo        String
+  titulo      String
+  ubicacion   String
+  updatedAt         DateTime
+  publicado         Boolean             @default(false)
+  newsletter_envios newsletter_envios[]
+}
+
+model lideres {
+  id             Int        @id @default(autoincrement())
+  nombre         String
+  rol            String
+  especialidades String[]
+  disponibilidad String
+  ubicacion      String
+  imagen         String?
+  bio            String?
+  activo         Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime
+  reservas       reservas[]
+}
+
+model reservas {
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  contacto     String
+  modalidad    Modalidad
+  mensaje      String?
+  estado       EstadoReserva @default(PENDIENTE)
+  liderId      Int
+  emailEnviado Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime
+  lideres      lideres       @relation(fields: [liderId], references: [id])
+}
+
+enum EstadoReserva {
+  PENDIENTE
+  CONFIRMADA
+  COMPLETADA
+  CANCELADA
+}
+
+enum Modalidad {
+  PRESENCIAL
+  ONLINE
+}
+
+model suscriptores {
+  id        Int                 @id @default(autoincrement())
+  email     String              @unique
+  nombre    String?
+  estado    Boolean             @default(true)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @default(now()) @updatedAt
+  envios    newsletter_envios[]
+}
+
+model newsletter_envios {
+  id           Int          @id @default(autoincrement())
+  eventoId     String
+  suscriptorId Int
+  enviado      Boolean      @default(false)
+  enviadoAt    DateTime?
+  error        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  evento       Evento       @relation(fields: [eventoId], references: [id])
+  suscriptor   suscriptores @relation(fields: [suscriptorId], references: [id])
+}
