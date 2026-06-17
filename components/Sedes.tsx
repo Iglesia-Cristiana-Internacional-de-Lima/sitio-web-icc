@@ -2,55 +2,29 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const sedes = [
-  {
-    name: "Lima Centro",
-    district: "Cercado de Lima",
-    pastor: "Pastor Andrés Mendoza",
-    schedule: "Domingos · 10:00 am · 6:00 pm",
-    address: "Av. Garcilaso de la Vega 1234",
-  },
-  {
-    name: "Miraflores",
-    district: "Miraflores",
-    pastor: "Pastor Daniel Quispe",
-    schedule: "Domingos · 11:00 am",
-    address: "Av. Larco 980",
-  },
-  {
-    name: "San Isidro",
-    district: "San Isidro",
-    pastor: "Pastor Lucía Reyes",
-    schedule: "Domingos · 10:30 am",
-    address: "Av. Javier Prado Este 456",
-  },
-  {
-    name: "La Molina",
-    district: "La Molina",
-    pastor: "Pastor Juan Pablo Vega",
-    schedule: "Domingos · 11:00 am",
-    address: "Av. La Universidad 1820",
-  },
-  {
-    name: "San Borja",
-    district: "San Borja",
-    pastor: "Pastor María Torres",
-    schedule: "Domingos · 10:00 am",
-    address: "Av. Aviación 2350",
-  },
-  {
-    name: "Surco",
-    district: "Santiago de Surco",
-    pastor: "Pastor Carlos Salazar",
-    schedule: "Domingos · 10:30 am · 6:30 pm",
-    address: "Av. Caminos del Inca 1670",
-  },
-];
+interface Sede {
+  id: number;
+  nombre: string;
+  direccion: string;
+  distrito: string | null;
+  horario: string | null;
+  lat: number | null;
+  lng: number | null;
+}
 
 export default function Sedes() {
+  const [sedes, setSedes] = useState<Sede[]>([]);
   const [active, setActive] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/public/sedes")
+      .then((r) => r.ok ? r.json() : { data: [] })
+      .then((data) => setSedes(data.data || []))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <section id="sedes" className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
@@ -91,52 +65,59 @@ export default function Sedes() {
           {/* Map placeholder */}
           <div className="lg:col-span-5 order-2 lg:order-1">
             <div className="sticky top-28 aspect-[3/4] lg:aspect-auto lg:h-[640px] bg-[#191919] border border-white/10 rounded-sm overflow-hidden relative">
-              <MapVisualization activeIndex={active} />
+              <MapVisualization sedes={sedes} activeIndex={active} />
             </div>
           </div>
 
           {/* List */}
           <div className="lg:col-span-7 order-1 lg:order-2 divide-y divide-white/10 border-y border-white/10">
-            {sedes.map((s, i) => (
-              <motion.button
-                key={s.name}
-                onMouseEnter={() => setActive(i)}
-                onClick={() => setActive(i)}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.05 }}
-                className={`w-full text-left py-8 group transition-colors ${
-                  active === i ? "bg-white/[0.02]" : ""
-                }`}
-              >
-                <div className="grid grid-cols-12 gap-4 items-center">
-                  <span className="col-span-1 font-mono text-[11px] tracking-[0.28em] text-white/40">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="col-span-7 md:col-span-6">
-                    <h3 className="font-display text-3xl md:text-4xl text-white group-hover:italic transition-all">
-                      {s.name}
-                    </h3>
-                    <p className="text-white/50 text-sm mt-1 flex items-center gap-2">
-                      <MapPin size={12} strokeWidth={1.5} />
-                      {s.district} · {s.address}
-                    </p>
-                  </div>
-                  <div className="hidden md:block md:col-span-4 text-white/60 text-sm">
-                    <p>{s.pastor}</p>
-                    <p className="font-mono text-[11px] tracking-wider mt-1 text-white/40">
-                      {s.schedule}
-                    </p>
-                  </div>
-                  <div className="col-span-4 md:col-span-1 flex justify-end">
-                    <span className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white transition-all">
-                      <ArrowUpRight size={16} strokeWidth={1.5} />
+            {loading ? (
+              <div className="py-20 flex justify-center">
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              </div>
+            ) : sedes.length === 0 ? (
+              <div className="py-20 text-center text-white/50">No hay sedes disponibles</div>
+            ) : (
+              sedes.map((s, i) => (
+                <motion.button
+                  key={s.id}
+                  onMouseEnter={() => setActive(i)}
+                  onClick={() => setActive(i)}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.05 }}
+                  className={`w-full text-left py-8 group transition-colors ${
+                    active === i ? "bg-white/[0.02]" : ""
+                  }`}
+                >
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    <span className="col-span-1 font-mono text-[11px] tracking-[0.28em] text-white/40">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
+                    <div className="col-span-7 md:col-span-6">
+                      <h3 className="font-display text-3xl md:text-4xl text-white group-hover:italic transition-all">
+                        {s.nombre}
+                      </h3>
+                      <p className="text-white/50 text-sm mt-1 flex items-center gap-2">
+                        <MapPin size={12} strokeWidth={1.5} />
+                        {s.distrito} · {s.direccion}
+                      </p>
+                    </div>
+                    <div className="hidden md:block md:col-span-4 text-white/60 text-sm">
+                      <p className="font-mono text-[11px] tracking-wider mt-1 text-white/40">
+                        {s.horario || "Domingos"}
+                      </p>
+                    </div>
+                    <div className="col-span-4 md:col-span-1 flex justify-end">
+                      <span className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white transition-all">
+                        <ArrowUpRight size={16} strokeWidth={1.5} />
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </motion.button>
-            ))}
+                </motion.button>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -144,16 +125,14 @@ export default function Sedes() {
   );
 }
 
-function MapVisualization({ activeIndex }: { activeIndex: number }) {
-  // Stylized map with dots representing sedes
-  const points = [
-    { x: 35, y: 45, name: "Lima Centro" },
-    { x: 28, y: 65, name: "Miraflores" },
-    { x: 45, y: 55, name: "San Isidro" },
-    { x: 70, y: 50, name: "La Molina" },
-    { x: 55, y: 60, name: "San Borja" },
-    { x: 50, y: 75, name: "Surco" },
-  ];
+function MapVisualization({ sedes, activeIndex }: { sedes: Sede[]; activeIndex: number }) {
+  // Convert lat/lng to SVG coordinates (simplified projection)
+  const points = sedes.map((s) => ({
+    // ponytail: simple linear mapping, replace with proper projection if needed
+    x: s.lng ? ((s.lng + 77.1) * 100) : 50,
+    y: s.lat ? ((s.lat + 12.1) * -100) : 50,
+    name: s.nombre,
+  }));
 
   return (
     <div className="absolute inset-0 p-8">
