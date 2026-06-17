@@ -12,12 +12,12 @@ export default function Marquee() {
   const repeated = [...phrases, ...phrases, ...phrases];
 
   return (
-    <section className="relative bg-[#0d0d0d] py-10 border-y border-white/5 overflow-hidden">
+    <section className="relative bg-[var(--bg)] py-10 border-y border-[var(--line)] overflow-hidden">
       <div className="marquee">
         <div className="marquee-track">
           {repeated.map((phrase, i) => (
             <div key={i} className="flex items-center gap-16 shrink-0">
-              <span className="font-display italic text-3xl md:text-5xl text-white/90 whitespace-nowrap">
+              <span className="font-display italic text-3xl md:text-5xl text-[var(--fg-90)] whitespace-nowrap">
                 {phrase}
               </span>
               <Asterisk />
@@ -35,7 +35,7 @@ function Asterisk() {
       width="28"
       height="28"
       viewBox="0 0 28 28"
-      className="text-white/40 shrink-0"
+      className="text-[var(--fg-40)] shrink-0"
       fill="currentColor"
     >
       <path d="M14 2v24M5 5l18 18M2 14h24M5 23l18-18" stroke="currentColor" strokeWidth="1.5" />

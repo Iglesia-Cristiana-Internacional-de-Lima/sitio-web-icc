@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const sedes = [
   {
@@ -53,14 +53,14 @@ export default function Sedes() {
   const [active, setActive] = useState(0);
 
   return (
-    <section id="sedes" className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section id="sedes" className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             03 — Familia de iglesias
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -71,15 +71,15 @@ export default function Sedes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Encuentra tu sede
               <br />
-              <em className="italic font-light text-white/70">más cercana.</em>
+              <em className="italic font-light text-[var(--fg-70)]">más cercana.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8">
-            <p className="text-white/60 text-lg leading-relaxed">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed">
               Seis sedes en Lima. Cada una con su propio sabor, mismo
               corazón. Elige la que te queda cerca y ven sin avisar.
             </p>
@@ -96,7 +96,7 @@ export default function Sedes() {
           </div>
 
           {/* List */}
-          <div className="lg:col-span-7 order-1 lg:order-2 divide-y divide-white/10 border-y border-white/10">
+          <div className="lg:col-span-7 order-1 lg:order-2 divide-y divide-[var(--line)] border-y border-[var(--line)]">
             {sedes.map((s, i) => (
               <motion.button
                 key={s.name}
@@ -111,26 +111,26 @@ export default function Sedes() {
                 }`}
               >
                 <div className="grid grid-cols-12 gap-4 items-center">
-                  <span className="col-span-1 font-mono text-[11px] tracking-[0.28em] text-white/40">
+                  <span className="col-span-1 font-mono text-[11px] tracking-[0.28em] text-[var(--fg-40)]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div className="col-span-7 md:col-span-6">
-                    <h3 className="font-display text-3xl md:text-4xl text-white group-hover:italic transition-all">
+                    <h3 className="font-display text-3xl md:text-4xl text-[var(--fg)] group-hover:italic transition-all">
                       {s.name}
                     </h3>
-                    <p className="text-white/50 text-sm mt-1 flex items-center gap-2">
+                    <p className="text-[var(--fg-50)] text-sm mt-1 flex items-center gap-2">
                       <MapPin size={12} strokeWidth={1.5} />
                       {s.district} · {s.address}
                     </p>
                   </div>
-                  <div className="hidden md:block md:col-span-4 text-white/60 text-sm">
+                  <div className="hidden md:block md:col-span-4 text-[var(--fg-60)] text-sm">
                     <p>{s.pastor}</p>
-                    <p className="font-mono text-[11px] tracking-wider mt-1 text-white/40">
+                    <p className="font-mono text-[11px] tracking-wider mt-1 text-[var(--fg-40)]">
                       {s.schedule}
                     </p>
                   </div>
                   <div className="col-span-4 md:col-span-1 flex justify-end">
-                    <span className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white transition-all">
+                    <span className="w-10 h-10 rounded-full border border-[var(--line-strong)] flex items-center justify-center group-hover:bg-[var(--inverse-bg)] group-hover:text-[var(--inverse-fg)] group-hover:border-[var(--inverse-bg)] transition-all">
                       <ArrowUpRight size={16} strokeWidth={1.5} />
                     </span>
                   </div>
@@ -145,6 +145,17 @@ export default function Sedes() {
 }
 
 function MapVisualization({ activeIndex }: { activeIndex: number }) {
+  const [barValues, setBarValues] = useState<{ height: number; delay: number }[]>([]);
+
+  useEffect(() => {
+    setBarValues(
+      Array.from({ length: 12 }).map((_, i) => ({
+        height: 30 + Math.random() * 70,
+        delay: i * 0.08,
+      }))
+    );
+  }, []);
+
   // Stylized map with dots representing sedes
   const points = [
     { x: 35, y: 45, name: "Lima Centro" },
@@ -199,13 +210,13 @@ function MapVisualization({ activeIndex }: { activeIndex: number }) {
           </p>
         </div>
         <div className="flex items-end gap-[2px] h-6 text-white/60">
-          {Array.from({ length: 12 }).map((_, i) => (
+          {barValues.map((bar, i) => (
             <span
               key={i}
               className="sound-bar"
               style={{
-                height: `${30 + Math.random() * 70}%`,
-                animationDelay: `${i * 0.08}s`,
+                height: `${bar.height}%`,
+                animationDelay: `${bar.delay}s`,
               }}
             />
           ))}

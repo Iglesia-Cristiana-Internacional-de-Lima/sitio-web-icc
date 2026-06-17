@@ -13,44 +13,44 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#0d0d0d] border-t border-white/10 px-6 md:px-10 pt-32 pb-10">
+    <footer className="relative bg-[var(--bg)] border-t border-[var(--line)] px-6 md:px-10 pt-32 pb-10">
       <div className="max-w-[1600px] mx-auto">
         {/* Massive headline / signup */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-32 border-b border-white/10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-32 border-b border-[var(--line)]">
           <div className="lg:col-span-7">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(3rem,9vw,9rem)]"
+              className="display-heading text-[var(--fg)] text-[clamp(3rem,9vw,9rem)]"
             >
               No te pierdas
               <br />
-              <em className="italic font-light text-white/70">
+              <em className="italic font-light text-[var(--fg-70)]">
                 lo que viene.
               </em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-12">
-            <p className="text-white/60 text-lg mb-8">
+            <p className="text-[var(--fg-60)] text-lg mb-8">
               Recibe las próximas charlas bíblicas, eventos y mensajes
               dominicales directo en tu correo. Sin spam.
             </p>
 
             {!submitted ? (
-              <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
+              <div className="flex items-center border-b border-[var(--line-strong)] focus-within:border-[var(--fg)] transition-colors">
                 <input
                   type="email"
                   placeholder="tu@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                  className="flex-1 bg-transparent text-white text-lg py-4 outline-none placeholder:text-white/30"
+                  className="flex-1 bg-transparent text-[var(--fg)] text-lg py-4 outline-none placeholder:text-[var(--fg-30)]"
                 />
                 <button
                   onClick={handleSubmit}
-                  className="p-4 text-white hover:translate-x-1 transition-transform"
+                  className="p-4 text-[var(--fg)] hover:translate-x-1 transition-transform"
                   aria-label="Suscribirse"
                 >
                   <ArrowRight size={20} strokeWidth={1.5} />
@@ -60,13 +60,13 @@ export default function Footer() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-display text-2xl text-white"
+                className="font-display text-2xl text-[var(--fg)]"
               >
                 Listo. Nos vemos pronto.
               </motion.p>
             )}
 
-            <p className="text-white/40 text-xs mt-4 font-mono tracking-wider uppercase">
+            <p className="text-[var(--fg-40)] text-xs mt-4 font-mono tracking-wider uppercase">
               Promesa: máximo un correo por semana
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="col-span-2 md:col-span-4">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/40">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[var(--line-strong)] bg-[var(--surface-5)]">
                 <div className="flex items-end gap-[2px] h-4 text-white">
                   {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
                     <span
@@ -92,15 +92,15 @@ export default function Footer() {
                 </div>
               </div>
               <div className="flex flex-col leading-tight">
-                <span className="font-display text-[15px] tracking-tight text-white">
+                <span                   className="font-display text-[15px] tracking-tight text-[var(--fg)]">
                   Iglesia Cristiana
                 </span>
-                <span className="font-mono text-[10px] tracking-[0.28em] text-white/50 uppercase">
+                <span className="font-mono text-[10px] tracking-[0.28em] text-[var(--fg-50)] uppercase">
                   Internacional · Lima
                 </span>
               </div>
             </div>
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs">
+            <p className="text-[var(--fg-50)] text-sm leading-relaxed max-w-xs">
               Una familia. Muchas sedes. Encuentra tu lugar, conecta con Dios,
               vive en comunidad.
             </p>
@@ -139,42 +139,42 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="pt-10 border-t border-[var(--line)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-6">
-            <span className="font-mono text-[10px] tracking-[0.28em] text-white/40 uppercase">
+            <span className="font-mono text-[10px] tracking-[0.28em] text-[var(--fg-40)] uppercase">
               © 2026 Iglesia Cristiana Internacional Lima
             </span>
           </div>
 
-          <div className="flex items-center gap-5 text-white/50">
+          <div className="flex items-center gap-5 text-[var(--fg-50)]">
             <a
               href="#"
-              className="hover:text-white transition-colors"
+              className="hover:text-[var(--fg)] transition-colors"
               aria-label="Instagram"
             >
               <Instagram size={18} strokeWidth={1.5} />
             </a>
             <a
               href="#"
-              className="hover:text-white transition-colors"
+              className="hover:text-[var(--fg)] transition-colors"
               aria-label="YouTube"
             >
               <Youtube size={18} strokeWidth={1.5} />
             </a>
             <a
               href="#"
-              className="hover:text-white transition-colors"
+              className="hover:text-[var(--fg)] transition-colors"
               aria-label="Facebook"
             >
               <Facebook size={18} strokeWidth={1.5} />
             </a>
           </div>
 
-          <div className="flex items-center gap-6 font-mono text-[10px] tracking-[0.28em] uppercase text-white/40">
-            <a href="#" className="hover:text-white transition-colors">
+          <div className="flex items-center gap-6 font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--fg-40)]">
+            <a href="#" className="hover:text-[var(--fg)] transition-colors">
               Privacidad
             </a>
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="#" className="hover:text-[var(--fg)] transition-colors">
               Términos
             </a>
           </div>
@@ -182,7 +182,7 @@ export default function Footer() {
 
         {/* Massive watermark */}
         <div className="mt-20 -mx-6 md:-mx-10 overflow-hidden">
-          <p className="font-display text-[clamp(4rem,18vw,18rem)] leading-[0.85] text-white/[0.04] whitespace-nowrap text-center select-none">
+          <p className="font-display text-[clamp(4rem,18vw,18rem)] leading-[0.85] text-[var(--fg-10)] whitespace-nowrap text-center select-none">
             <em className="italic font-light">Lima · Perú · 2026</em>
           </p>
         </div>
@@ -200,7 +200,7 @@ function FooterColumn({
 }) {
   return (
     <div className="md:col-span-2">
-      <h4 className="font-mono text-[10px] tracking-[0.32em] text-white/40 uppercase mb-5">
+      <h4 className="font-mono text-[10px] tracking-[0.32em] text-[var(--fg-40)] uppercase mb-5">
         {title}
       </h4>
       <ul className="space-y-3">
@@ -208,7 +208,7 @@ function FooterColumn({
           <li key={l.label}>
             <a
               href={l.href}
-              className="text-white/80 text-sm hover:text-white transition-colors"
+              className="text-[var(--fg-80)] text-sm hover:text-[var(--fg)] transition-colors"
             >
               {l.label}
             </a>

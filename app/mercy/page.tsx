@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function MercyPage() {
   return (
-    <main className="bg-[#0d0d0d] text-white relative">
+    <main className="bg-[var(--bg)] text-[var(--fg)] relative">
       <Navbar />
       <MercyHero />
       <MercyImpacto />

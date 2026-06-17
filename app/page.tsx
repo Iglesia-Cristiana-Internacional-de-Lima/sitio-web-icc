@@ -16,7 +16,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
   return (
-    <main className="bg-[#0d0d0d] text-white relative">
+    <main className="bg-[var(--bg)] text-[var(--fg)] relative overflow-x-hidden">
       {/* Navigation */}
       <Navbar />
 

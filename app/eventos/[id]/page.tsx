@@ -81,8 +81,8 @@ export default function EventoDetallePage() {
 
   if (cargando) {
     return (
-      <main className="bg-[#0d0d0d] text-white min-h-screen flex items-center justify-center">
-        <div className="flex items-center gap-3 text-gray-400">
+      <main className="bg-[var(--bg)] text-[var(--fg)] min-h-screen flex items-center justify-center">
+        <div className="flex items-center gap-3 text-[var(--fg-60)]">
           <Loader2 size={20} className="animate-spin" />
           <span>Cargando evento...</span>
         </div>
@@ -92,12 +92,12 @@ export default function EventoDetallePage() {
 
   if (error || !evento) {
     return (
-      <main className="bg-[#0d0d0d] text-white min-h-screen flex items-center justify-center px-4">
+      <main className="bg-[var(--bg)] text-[var(--fg)] min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <p className="text-red-400 text-lg">{error || 'Evento no encontrado'}</p>
           <button
             onClick={() => router.push('/eventos')}
-            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#191919] text-gray-300 border border-gray-700 hover:bg-white hover:text-black hover:border-white transition-all"
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--surface)] text-gray-300 border border-[var(--line-strong)] hover:bg-[var(--inverse-bg)] hover:text-[var(--inverse-fg)] hover:border-[var(--inverse-bg)] transition-all"
           >
             <ArrowLeft size={16} />
             Volver a eventos
@@ -110,77 +110,77 @@ export default function EventoDetallePage() {
   const categoria = TIPO_A_CATEGORIA[evento.tipo] || evento.tipo;
 
   return (
-    <main className="bg-[#0d0d0d] text-white pt-24 pb-24 px-4 sm:px-6 lg:px-8 min-h-screen">
+    <main className="bg-[var(--bg)] text-[var(--fg)] pt-24 pb-24 px-4 sm:px-6 lg:px-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
         {/* Botón de regreso */}
         <button
           onClick={() => router.push('/eventos')}
-          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-[var(--fg-60)] hover:text-[var(--fg)] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
           Volver a eventos
         </button>
 
         {/* Tarjeta principal */}
-        <div className="bg-[#191919] border border-gray-800 rounded-2xl p-8 md:p-10">
+        <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-8 md:p-10">
           {/* Tipo */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-gray-800 text-gray-400 text-[10px] font-semibold tracking-wider uppercase mb-5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface-10)] text-[var(--fg-60)] text-[10px] font-semibold tracking-wider uppercase mb-5">
             <Tag size={12} />
             {categoria}
           </div>
 
           {/* Título */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--fg)] mb-6">
             {evento.titulo}
           </h1>
 
           {/* Descripción */}
-          <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-10">
+          <p className="text-[var(--fg-60)] text-base sm:text-lg leading-relaxed mb-10">
             {evento.descripcion}
           </p>
 
           {/* Detalles en dos columnas responsive */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            <div className="flex items-center gap-3 bg-[#0d0d0d] border border-gray-800 rounded-xl p-4">
-              <Calendar size={18} className="text-gray-500 shrink-0" />
+            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
+              <Calendar size={18} className="text-[var(--fg-40)] shrink-0" />
               <div>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
                   Fecha
                 </p>
-                <p className="text-white text-sm font-medium capitalize">
+                <p className="text-[var(--fg)] text-sm font-medium capitalize">
                   {formatearFecha(evento.fecha)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-[#0d0d0d] border border-gray-800 rounded-xl p-4">
-              <Clock size={18} className="text-gray-500 shrink-0" />
+            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
+              <Clock size={18} className="text-[var(--fg-40)] shrink-0" />
               <div>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
                   Hora
                 </p>
-                <p className="text-white text-sm font-medium">
+                <p className="text-[var(--fg)] text-sm font-medium">
                   {formatearHora(evento.fecha)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-[#0d0d0d] border border-gray-800 rounded-xl p-4">
-              <MapPin size={18} className="text-gray-500 shrink-0" />
+            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
+              <MapPin size={18} className="text-[var(--fg-40)] shrink-0" />
               <div>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
                   Ubicación
                 </p>
-                <p className="text-white text-sm font-medium">
+                <p className="text-[var(--fg)] text-sm font-medium">
                   {evento.ubicacion}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-[#0d0d0d] border border-gray-800 rounded-xl p-4">
-              <User size={18} className="text-gray-500 shrink-0" />
+            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
+              <User size={18} className="text-[var(--fg-40)] shrink-0" />
               <div>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
                   Organiza
                 </p>
-                <p className="text-white text-sm font-medium">
+                <p className="text-[var(--fg)] text-sm font-medium">
                   {evento.responsable}
                 </p>
               </div>
@@ -189,7 +189,7 @@ export default function EventoDetallePage() {
 
           {/* Mapa */}
           {evento.latitud && evento.longitud ? (
-            <div className="bg-[#0d0d0d] border border-gray-800 rounded-xl overflow-hidden">
+            <div className="bg-[var(--bg)] border border-[var(--line)] rounded-xl overflow-hidden">
               <iframe
                 title={`Ubicación de ${evento.titulo}`}
                 src={`https://maps.google.com/maps?q=${evento.latitud},${evento.longitud}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
@@ -199,14 +199,14 @@ export default function EventoDetallePage() {
               />
             </div>
           ) : (
-            <div className="bg-[#0d0d0d] border border-gray-800 rounded-xl p-8">
+            <div className="bg-[var(--bg)] border border-[var(--line)] rounded-xl p-8">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shrink-0">
-                  <Globe size={18} className="text-gray-500" />
+                <div className="w-10 h-10 rounded-full bg-[var(--surface-10)] flex items-center justify-center shrink-0">
+                  <Globe size={18} className="text-[var(--fg-40)]" />
                 </div>
                 <div>
-                  <p className="text-white text-sm font-medium">Evento sin ubicación física</p>
-                  <p className="text-gray-500 text-xs mt-0.5">
+                  <p className="text-[var(--fg)] text-sm font-medium">Evento sin ubicación física</p>
+                  <p className="text-[var(--fg-40)] text-xs mt-0.5">
                     Este evento es virtual o no requiere desplazamiento.
                   </p>
                 </div>

@@ -4,37 +4,36 @@ import { motion } from "framer-motion";
 import { ArrowRight, Instagram } from "lucide-react";
 import ReelGrid from "@/components/ReelGrid";
 
-// Placeholder reels from @evolutionlima
 const evolutionReels = [
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO001/",
-    caption: "Devocional PUCP - Semana de exámenes",
+    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
+    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO002/",
-    caption: "Retiro universitario 2026",
+    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
+    caption: "Pedida de enamoramiento | Freddy & Carla",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO003/",
-    caption: "San Marcos - Miércoles de almuerzo",
+    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
+    caption: "Entresemanal - Comunidad universitaria",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO004/",
-    caption: "Charla: Propósito y carrera",
+    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
+    caption: "Servicio Dominical - Bautismo de Amalia",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO005/",
-    caption: "Voluntariado Mercy con Evolution",
+    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
+    caption: "Entresemanal de Hombres",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVO006/",
-    caption: "Bienvenida cachimbos PUCP",
+    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
+    caption: "Staff de Líderes",
   },
 ];
 
@@ -58,7 +57,7 @@ export default function EvolutionGallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,6vw,5rem)] text-[#e2a633] leading-tight"
+              className="display-heading text-[#e2a633] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Así vivimos
               <br />
