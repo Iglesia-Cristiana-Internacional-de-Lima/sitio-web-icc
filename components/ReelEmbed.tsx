@@ -134,18 +134,7 @@ export default function ReelEmbed({
         <>
           {!isLoaded && (
             <div className="absolute inset-0 bg-[#191919] flex items-center justify-center">
-              <div className="flex items-end gap-[2px] h-8 text-white/40">
-                {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
-                  <span
-                    key={i}
-                    className="sound-bar"
-                    style={{
-                      height: `${h * 100}%`,
-                      animationDelay: `${i * 0.12}s`,
-                    }}
-                  />
-                ))}
-              </div>
+              <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
             </div>
           )}
           <iframe

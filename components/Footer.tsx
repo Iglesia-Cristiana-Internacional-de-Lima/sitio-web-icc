@@ -5,11 +5,40 @@ import { ArrowRight, Instagram, Youtube, Facebook } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
-    if (email.includes("@")) setSubmitted(true);
+  const handleSubmit = async () => {
+    if (!email.includes("@")) return;
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, nombre: nombre || null }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        throw new Error("Ocurrió un error en el servidor. Por favor intenta más tarde.");
+      }
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Ocurrió un error.");
+      }
+
+      setStatus("success");
+      setMessage(data?.message || "Listo. Nos vemos pronto.");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -38,32 +67,56 @@ export default function Footer() {
               dominicales directo en tu correo. Sin spam.
             </p>
 
-            {!submitted ? (
-              <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
+            {status !== "success" ? (
+              <div className="flex flex-col gap-4">
                 <input
-                  type="email"
-                  placeholder="tu@correo.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                  className="flex-1 bg-transparent text-white text-lg py-4 outline-none placeholder:text-white/30"
+                  type="text"
+                  placeholder="Tu nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  disabled={status === "loading"}
+                  className="bg-transparent text-white text-lg py-3 border-b border-white/30 focus:border-white outline-none placeholder:text-white/30 disabled:opacity-50 transition-colors"
                 />
-                <button
-                  onClick={handleSubmit}
-                  className="p-4 text-white hover:translate-x-1 transition-transform"
-                  aria-label="Suscribirse"
-                >
-                  <ArrowRight size={20} strokeWidth={1.5} />
-                </button>
+                <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
+                  <input
+                    type="email"
+                    placeholder="tu@correo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    disabled={status === "loading"}
+                    className="flex-1 bg-transparent text-white text-lg py-3 outline-none placeholder:text-white/30 disabled:opacity-50"
+                  />
+                  <button
+                    onClick={handleSubmit}
+                    disabled={status === "loading"}
+                    className="p-3 text-white hover:translate-x-1 transition-transform disabled:opacity-50"
+                    aria-label="Suscribirse"
+                  >
+                    {status === "loading" ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <ArrowRight size={20} strokeWidth={1.5} />
+                    )}
+                  </button>
+                </div>
+                {status === "error" && (
+                  <p className="text-red-400 text-sm mt-1">{message}</p>
+                )}
               </div>
             ) : (
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-display text-2xl text-white"
               >
-                Listo. Nos vemos pronto.
-              </motion.p>
+                <p className="font-display text-2xl text-white">Listo. Nos vemos pronto.</p>
+                <button 
+                  onClick={() => { setStatus("idle"); setEmail(""); setNombre(""); }}
+                  className="text-white/50 hover:text-white text-sm mt-2 underline"
+                >
+                  Suscribir otro correo
+                </button>
+              </motion.div>
             )}
 
             <p className="text-white/40 text-xs mt-4 font-mono tracking-wider uppercase">
@@ -77,20 +130,6 @@ export default function Footer() {
           {/* Logo */}
           <div className="col-span-2 md:col-span-4">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/40">
-                <div className="flex items-end gap-[2px] h-4 text-white">
-                  {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
-                    <span
-                      key={i}
-                      className="sound-bar"
-                      style={{
-                        height: `${h * 100}%`,
-                        animationDelay: `${i * 0.12}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-[15px] tracking-tight text-white">
                   Iglesia Cristiana

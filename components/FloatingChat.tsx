@@ -69,18 +69,7 @@ export default function FloatingChat() {
             {/* Header */}
             <div className="p-5 border-b border-white/10 flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10">
-                <div className="flex items-end gap-[2px] h-4 text-white">
-                  {[0.5, 0.8, 1, 0.8, 0.5].map((h, i) => (
-                    <span
-                      key={i}
-                      className="sound-bar"
-                      style={{
-                        height: `${h * 100}%`,
-                        animationDelay: `${i * 0.12}s`,
-                      }}
-                    />
-                  ))}
-                </div>
+                <MessageCircle size={20} className="text-white" />
               </div>
               <div>
                 <p className="font-display text-base text-white">

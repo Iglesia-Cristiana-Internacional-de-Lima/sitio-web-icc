@@ -18,7 +18,12 @@ const rolesIniciales = [
   { nombre: "ADMIN", descripcion: "Administrador con acceso total" },
   { nombre: "LIDER", descripcion: "Líder de estudios bíblicos y ministerios" },
   { nombre: "MIEMBRO", descripcion: "Miembro registrado de la iglesia" },
-  { nombre: "SUSCRIPTOR", descripcion: "Solo recibe notificaciones" },
+];
+
+const suscriptoresIniciales = [
+  { email: "juan.perez@gmail.com", nombre: "Juan Pérez" },
+  { email: "maria.garcia@gmail.com", nombre: "María García" },
+  { email: "carlos.lopez@hotmail.com", nombre: null },
 ];
 
 const sedesIniciales = [
@@ -110,6 +115,7 @@ async function main() {
   await prisma.sede.deleteMany();
   await prisma.ministerio.deleteMany();
   await prisma.campanaEmail.deleteMany();
+  await prisma.suscriptores.deleteMany();
 
   console.log("Creando roles...");
   for (const rol of rolesIniciales) {
@@ -181,8 +187,15 @@ async function main() {
     console.log("  ✓ Evento: Servicio Dominical");
   }
 
+  // Crear suscriptores de ejemplo
+  console.log("Creando suscriptores...");
+  for (const suscriptor of suscriptoresIniciales) {
+    await prisma.suscriptores.create({ data: suscriptor });
+    console.log(`  ✓ Suscriptor: ${suscriptor.email}`);
+  }
+
   console.log("\nSeed completado!");
-  console.log(`Roles: ${rolesIniciales.length}, Líderes: ${lideresIniciales.length}, Sedes: ${sedesIniciales.length}, Ministerios: ${ministeriosIniciales.length}`);
+  console.log(`Roles: ${rolesIniciales.length}, Líderes: ${lideresIniciales.length}, Sedes: ${sedesIniciales.length}, Ministerios: ${ministeriosIniciales.length}, Suscriptores: ${suscriptoresIniciales.length}`);
 }
 
 main()
