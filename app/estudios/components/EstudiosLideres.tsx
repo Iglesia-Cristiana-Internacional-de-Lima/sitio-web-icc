@@ -1,83 +1,159 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Calendar, MapPin, Clock, ArrowRight, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Calendar, MapPin, Clock, ArrowRight, X, CheckCircle, Shuffle, MessageCircle } from "lucide-react";
+import type { Lider, LiderAPI, Modalidad, ReservaFormData, FormErrors, ReservaConfirmacion, ReservaAPIResponse } from "../types";
+import { validateReservaForm, hasErrors, asignarLiderAutomatico } from "../utils/validations";
+import { useSession } from "@/hooks/useSession";
 
-const lideres = [
-  {
-    id: 1,
-    name: "Andrés Mendoza",
-    role: "Pastor Principal",
-    specialties: ["Fe y trabajo", "Matrimonio", "Liderazgo"],
-    availability: "Lunes a Viernes",
-    location: "Lima Centro / Online",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-    bio: "20 años acompañando personas en su camino de fe. Especializado en integrar la fe con la vida profesional.",
-  },
-  {
-    id: 2,
-    name: "Lucía Reyes",
-    role: "Pastora · San Isidro",
-    specialties: ["Mujeres", "Familia", "Crecimiento espiritual"],
-    availability: "Martes, Jueves, Sábados",
-    location: "San Isidro / Miraflores / Online",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
-    bio: "Apasionada por el discipulado de mujeres. Conversaciones honestas sobre fe, identidad y propósito.",
-  },
-  {
-    id: 3,
-    name: "Daniel Quispe",
-    role: "Pastor · Miraflores",
-    specialties: ["Jóvenes profesionales", "Dudas de fe", "Apologética"],
-    availability: "Miércoles a Sábados",
-    location: "Miraflores / La Molina / Online",
-    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
-    bio: "Ingeniero de formación. Experto en abordar preguntas difíciles sobre fe, ciencia y razón.",
-  },
-  {
-    id: 4,
-    name: "María Torres",
-    role: "Líder de Ministerios",
-    specialties: ["Universitarios", "Transiciones de vida", "Vocación"],
-    availability: "Lunes, Miércoles, Viernes",
-    location: "San Borja / Surco / Online",
-    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
-    bio: "Acompañando a jóvenes en sus primeros pasos de fe y grandes decisiones de vida.",
-  },
-  {
-    id: 5,
-    name: "Carlos Salazar",
-    role: "Pastor · Surco",
-    specialties: ["Hombres", "Paternidad", "Finanzas y fe"],
-    availability: "Martes, Jueves, Sábados",
-    location: "Surco / La Molina / Online",
-    img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
-    bio: "Conversaciones prácticas para hombres sobre lo que realmente importa.",
-  },
-  {
-    id: 6,
-    name: "Patricia Vega",
-    role: "Líder · Eventos",
-    specialties: ["Primera vez", "Exploración de fe", "Comunidad"],
-    availability: "Flexible",
-    location: "Todas las sedes / Online",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
-    bio: "Especializada en acompañar a personas que están conociendo la fe por primera vez.",
-  },
-];
+// ponytail: sin fallback hardcodeado, solo API
+const initialFormData: ReservaFormData = {
+  nombre: "",
+  contacto: "",
+  modalidad: null,
+  mensaje: "",
+  liderId: null,
+};
+
+// Helper para normalizar líder de API a formato del componente
+function normalizarLiderLocal(liderApi: LiderAPI): Lider {
+  return {
+    id: liderApi.id,
+    name: liderApi.nombre,
+    role: liderApi.rol,
+    specialties: liderApi.especialidades,
+    availability: liderApi.disponibilidad,
+    location: liderApi.ubicacion,
+    img: liderApi.imagen || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    bio: liderApi.bio || "",
+  };
+}
 
 export default function EstudiosLideres() {
-  const [selectedLider, setSelectedLider] = useState<(typeof lideres)[0] | null>(null);
+  const router = useRouter();
+  const { user, loading: sessionLoading } = useSession();
+  const [lideres, setLideres] = useState<Lider[]>([]);
+  const [isLoadingLideres, setIsLoadingLideres] = useState(true);
+  const [selectedLider, setSelectedLider] = useState<Lider | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState<ReservaFormData>(initialFormData);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [confirmacion, setConfirmacion] = useState<ReservaConfirmacion | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const handleSelect = (lider: (typeof lideres)[0]) => {
+  // Cargar líderes desde la API
+  useEffect(() => {
+    async function cargarLideres() {
+      try {
+        const response = await fetch("/api/estudios/lideres");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data.length > 0) {
+            const lideresNormalizados = data.data.map(normalizarLiderLocal);
+            setLideres(lideresNormalizados);
+          }
+        }
+      } catch (error) {
+        console.error("Error cargando líderes:", error);
+      } finally {
+        setIsLoadingLideres(false);
+      }
+    }
+    cargarLideres();
+  }, []);
+
+  const handleSelect = (lider: Lider) => {
+    if (!user) {
+      router.push(`/login?redirect=/estudios&liderId=${lider.id}`);
+      return;
+    }
     setSelectedLider(lider);
+    setFormData({ ...initialFormData, liderId: lider.id });
+    setErrors({});
+    setConfirmacion(null);
     setShowModal(true);
   };
 
+  const handleAutoAssign = () => {
+    if (!user) {
+      router.push("/login?redirect=/estudios&auto=1");
+      return;
+    }
+    const liderAsignado = asignarLiderAutomatico(lideres);
+    setSelectedLider(liderAsignado);
+    setFormData({ ...initialFormData, liderId: liderAsignado.id });
+    setErrors({});
+    setConfirmacion(null);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedLider(null);
+    setFormData(initialFormData);
+    setErrors({});
+    setConfirmacion(null);
+  };
+
+  const handleInputChange = (field: keyof ReservaFormData, value: string | Modalidad) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Limpiar error del campo al modificarlo
+    if (errors[field as keyof FormErrors]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field as keyof FormErrors];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.modalidad) {
+      setErrors({ modalidad: "Selecciona una modalidad" });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setApiError(null);
+
+    try {
+      const response = await fetch("/api/estudios/reservar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modalidad: formData.modalidad,
+          mensaje: formData.mensaje,
+          liderId: formData.liderId,
+        }),
+      });
+
+      const data: ReservaAPIResponse = await response.json();
+
+      if (data.success && data.data) {
+        setConfirmacion({
+          success: true,
+          lider: selectedLider!,
+          formData: { ...formData, nombre: user!.nombre, contacto: user!.email },
+          fechaRegistro: data.data.fechaRegistro,
+          whatsappLink: data.data.whatsappLink,
+          emailEnviado: data.data.emailEnviado,
+        });
+      } else {
+        setApiError(data.error || "Error al crear reserva");
+      }
+    } catch (error) {
+      setApiError("Error de conexión. Intenta de nuevo.");
+      console.error("API error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section id="lideres" className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
@@ -106,6 +182,15 @@ export default function EstudiosLideres() {
         </div>
 
         {/* Leaders grid */}
+        {isLoadingLideres ? (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
+        ) : lideres.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-white/50">No hay líderes disponibles</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lideres.map((lider, i) => (
             <motion.div
@@ -167,6 +252,34 @@ export default function EstudiosLideres() {
             </motion.div>
           ))}
         </div>
+        )}
+
+        {/* Auto-assign option */}
+        {lideres.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-12 text-center"
+          >
+            <p className="text-white/50 text-sm mb-4">
+              No sabes con quién conversar?
+            </p>
+            <button
+              onClick={handleAutoAssign}
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 text-sm hover:bg-white/5 hover:border-white/30 transition-all"
+            >
+              <Shuffle size={18} strokeWidth={1.5} />
+              Asignarme un líder automáticamente
+              <ArrowRight
+                size={16}
+                strokeWidth={1.5}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Booking Modal */}
@@ -174,7 +287,7 @@ export default function EstudiosLideres() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setShowModal(false)}
+            onClick={handleCloseModal}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -184,8 +297,8 @@ export default function EstudiosLideres() {
           >
             {/* Close button */}
             <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black transition-all"
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black transition-all z-10"
             >
               <X size={18} strokeWidth={1.5} />
             </button>
@@ -209,70 +322,180 @@ export default function EstudiosLideres() {
               </p>
             </div>
 
-            {/* Form */}
-            <div className="p-8 space-y-6">
-              <div>
-                <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                  Tu nombre
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ej: Juan Pérez"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
+            {/* Confirmation View */}
+            {confirmacion ? (
+              <div className="p-8">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center"
+                >
+                  <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle size={40} className="text-green-500" />
+                  </div>
+                  <h3 className="font-display text-2xl text-white mb-2">
+                    Reserva registrada
+                  </h3>
+                  <p className="text-white/60 text-sm mb-8">
+                    Hemos recibido tu solicitud de estudio bíblico con {confirmacion.lider.name}.
+                  </p>
 
-              <div>
-                <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                  Tu correo o WhatsApp
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ej: juan@correo.com o +51 999 999 999"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-                />
-              </div>
+                  <div className="bg-white/5 rounded-xl p-6 text-left space-y-4 mb-8">
+                    <div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                        Líder asignado
+                      </span>
+                      <p className="text-white mt-1">{confirmacion.lider.name}</p>
+                    </div>
+                    <div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                        Modalidad
+                      </span>
+                      <p className="text-white mt-1 capitalize">{confirmacion.formData.modalidad}</p>
+                    </div>
+                    <div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                        Te contactaremos en
+                      </span>
+                      <p className="text-white mt-1">{confirmacion.formData.contacto}</p>
+                    </div>
+                    <div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                        Fecha de registro
+                      </span>
+                      <p className="text-white/70 mt-1 text-sm">{confirmacion.fechaRegistro}</p>
+                    </div>
+                  </div>
 
-              <div>
-                <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                  Modalidad preferida
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="px-4 py-3 rounded-lg border border-white/10 text-white/70 text-sm hover:bg-white/5 hover:border-white/20 transition-all">
-                    <MapPin size={16} strokeWidth={1.5} className="inline mr-2" />
-                    Presencial
-                  </button>
-                  <button className="px-4 py-3 rounded-lg border border-white/10 text-white/70 text-sm hover:bg-white/5 hover:border-white/20 transition-all">
-                    <Clock size={16} strokeWidth={1.5} className="inline mr-2" />
-                    Online
-                  </button>
+                  {confirmacion.emailEnviado && (
+                    <p className="text-green-400/80 text-sm mb-4">
+                      Te hemos enviado un correo de confirmación.
+                    </p>
+                  )}
+
+                  <p className="text-white/50 text-sm mb-6">
+                    Te contactaremos en menos de 24 horas para coordinar la fecha y hora de tu estudio.
+                  </p>
+
+                  <div className="space-y-3">
+                    {confirmacion.whatsappLink && (
+                      <a
+                        href={confirmacion.whatsappLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-all"
+                      >
+                        <MessageCircle size={18} strokeWidth={1.5} />
+                        Enviar WhatsApp ahora
+                      </a>
+                    )}
+
+                    <button
+                      onClick={handleCloseModal}
+                      className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            ) : (
+              /* Form */
+              <div className="p-8 space-y-6">
+                {/* User info banner */}
+                <div className="bg-white/5 rounded-lg p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-medium">
+                    {user?.nombre?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-white text-sm">{user?.nombre}</p>
+                    <p className="text-white/50 text-xs">{user?.email}</p>
+                  </div>
                 </div>
+
+                <div>
+                  <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
+                    Modalidad preferida *
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleInputChange("modalidad", "presencial")}
+                      className={`px-4 py-3 rounded-lg border text-sm transition-all ${
+                        formData.modalidad === "presencial"
+                          ? "border-white bg-white/10 text-white"
+                          : "border-white/10 text-white/70 hover:bg-white/5 hover:border-white/20"
+                      }`}
+                    >
+                      <MapPin size={16} strokeWidth={1.5} className="inline mr-2" />
+                      Presencial
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleInputChange("modalidad", "online")}
+                      className={`px-4 py-3 rounded-lg border text-sm transition-all ${
+                        formData.modalidad === "online"
+                          ? "border-white bg-white/10 text-white"
+                          : "border-white/10 text-white/70 hover:bg-white/5 hover:border-white/20"
+                      }`}
+                    >
+                      <Clock size={16} strokeWidth={1.5} className="inline mr-2" />
+                      Online
+                    </button>
+                  </div>
+                  {errors.modalidad && (
+                    <p className="text-red-400 text-xs mt-2">{errors.modalidad}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
+                    Algo que quieras que sepamos?
+                  </label>
+                  <textarea
+                    placeholder="Opcional: cuéntanos brevemente qué te gustaría conversar..."
+                    rows={3}
+                    value={formData.mensaje}
+                    onChange={(e) => handleInputChange("mensaje", e.target.value)}
+                    maxLength={500}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors resize-none"
+                  />
+                  <p className="text-white/30 text-xs mt-1 text-right">
+                    {formData.mensaje.length}/500
+                  </p>
+                </div>
+
+                {apiError && (
+                  <p className="text-red-400 text-sm text-center">{apiError}</p>
+                )}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      Registrando...
+                    </>
+                  ) : (
+                    <>
+                      Reservar con {selectedLider.name.split(" ")[0]}
+                      <ArrowRight
+                        size={16}
+                        strokeWidth={1.5}
+                        className="group-hover:translate-x-1 transition-transform"
+                      />
+                    </>
+                  )}
+                </button>
+
+                <p className="text-white/40 text-xs text-center">
+                  Te contactaremos en menos de 24 horas para confirmar tu cita.
+                </p>
               </div>
-
-              <div>
-                <label className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase block mb-2">
-                  Algo que quieras que sepamos?
-                </label>
-                <textarea
-                  placeholder="Opcional: cuéntanos brevemente qué te gustaría conversar..."
-                  rows={3}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors resize-none"
-                />
-              </div>
-
-              <button className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all">
-                Reservar con {selectedLider.name.split(" ")[0]}
-                <ArrowRight
-                  size={16}
-                  strokeWidth={1.5}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </button>
-
-              <p className="text-white/40 text-xs text-center">
-                Te contactaremos en menos de 24 horas para confirmar tu cita.
-              </p>
-            </div>
+            )}
           </motion.div>
         </div>
       )}
