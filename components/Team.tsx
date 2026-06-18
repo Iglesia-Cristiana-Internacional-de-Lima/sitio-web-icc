@@ -55,14 +55,14 @@ const team = [
 
 export default function Team() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             08 — Equipo
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -72,18 +72,18 @@ export default function Team() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+            className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
           >
             Personas reales,
             <br />
-            <em className="italic font-light text-white/70">sirviendo juntos.</em>
+            <em className="italic font-light text-[var(--fg-70)]">sirviendo juntos.</em>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="mt-8 text-white/60 text-lg leading-relaxed max-w-xl"
+            className="mt-8 text-[var(--fg-60)] text-lg leading-relaxed max-w-xl"
           >
             Detrás de cada sede, cada evento y cada ministerio hay un equipo
             comprometido. Conoce a quienes hacen posible esta familia.
@@ -91,7 +91,7 @@ export default function Team() {
         </div>
 
         {/* Team grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-white/5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[var(--line)]">
           {team.map((member, i) => (
             <motion.div
               key={member.name}

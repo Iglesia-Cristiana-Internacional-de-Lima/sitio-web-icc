@@ -132,7 +132,7 @@ export default function EventosLista() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(3rem,7vw,6rem)] text-white leading-[0.95]"
+              className="display-heading text-white text-[clamp(3rem,7vw,6rem)]"
             >
               Eventos
             </motion.h1>

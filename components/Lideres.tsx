@@ -26,14 +26,14 @@ const lideres = [
 
 export default function Lideres() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             05 — Liderazgo
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -43,10 +43,10 @@ export default function Lideres() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+            className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
           >
             Quienes
-            <em className="italic font-light text-white/70"> caminan </em>
+            <em className="italic font-light text-[var(--fg-70)]"> caminan </em>
             contigo.
           </motion.h2>
         </div>
@@ -77,11 +77,11 @@ export default function Lideres() {
               </div>
 
               {/* Info */}
-              <h3 className="font-display text-3xl text-white">{l.name}</h3>
-              <p className="font-mono text-[11px] tracking-[0.28em] text-white/50 uppercase mt-2">
+              <h3 className="font-display text-3xl text-[var(--fg)]">{l.name}</h3>
+              <p className="font-mono text-[11px] tracking-[0.28em] text-[var(--fg-50)] uppercase mt-2">
                 {l.role}
               </p>
-              <p className="mt-5 text-white/60 italic font-display text-lg leading-snug">
+              <p className="mt-5 text-[var(--fg-60)] italic font-display text-lg leading-snug">
                 &ldquo;{l.quote}&rdquo;
               </p>
             </motion.div>

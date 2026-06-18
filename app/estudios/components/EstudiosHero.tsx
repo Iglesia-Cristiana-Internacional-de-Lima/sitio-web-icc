@@ -48,7 +48,7 @@ export default function EstudiosHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.1 }}
-                className="font-display text-[clamp(2.5rem,7vw,5.5rem)] text-white leading-[0.95] mb-6"
+                className="display-heading text-white text-[clamp(2.5rem,7vw,5.5rem)] mb-6"
               >
                 Una conversación
                 <br />

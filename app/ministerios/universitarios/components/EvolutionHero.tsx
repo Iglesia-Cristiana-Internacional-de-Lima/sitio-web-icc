@@ -49,7 +49,7 @@ export default function EvolutionHero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.3 }}
-          className="font-display text-[clamp(4rem,12vw,10rem)] leading-[0.9] text-[#e2a633]"
+          className="display-heading text-[clamp(4rem,12vw,10rem)] text-[#e2a633]"
         >
           Evolution
           <br />

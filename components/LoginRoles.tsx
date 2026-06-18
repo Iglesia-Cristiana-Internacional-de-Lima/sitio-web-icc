@@ -30,14 +30,14 @@ const roles = [
 
 export default function LoginRoles() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             10 — Acceso
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -48,15 +48,15 @@ export default function LoginRoles() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Tu espacio
               <br />
-              <em className="italic font-light text-white/70">personal.</em>
+              <em className="italic font-light text-[var(--fg-70)]">personal.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8">
-            <p className="text-white/60 text-lg leading-relaxed">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed">
               Accede según tu rol para gestionar tu participación en la
               comunidad. Cada perfil tiene herramientas diseñadas para ti.
             </p>
@@ -74,17 +74,17 @@ export default function LoginRoles() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="group relative"
             >
-              <div className="h-full bg-[#191919] border border-white/10 rounded-2xl p-8 hover:border-white/20 hover:bg-[#1f1f1f] transition-all duration-500">
+              <div className="h-full bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-8 hover:border-[var(--line-strong)] hover:bg-[var(--surface)] transition-all duration-500">
                 {/* Icon */}
-                <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-6 group-hover:bg-white/10 transition-colors">
-                  <role.icon size={24} strokeWidth={1.5} className="text-white/80" />
+                <div className="w-14 h-14 rounded-full bg-[var(--surface-5)] flex items-center justify-center mb-6 group-hover:bg-[var(--surface-10)] transition-colors">
+                  <role.icon size={24} strokeWidth={1.5} className="text-[var(--fg-80)]" />
                 </div>
 
                 {/* Title & description */}
-                <h3 className="font-display text-3xl text-white mb-3 group-hover:italic transition-all">
+                <h3 className="font-display text-3xl text-[var(--fg)] mb-3 group-hover:italic transition-all">
                   {role.title}
                 </h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-6">
+                <p className="text-[var(--fg-50)] text-sm leading-relaxed mb-6">
                   {role.description}
                 </p>
 
@@ -93,9 +93,9 @@ export default function LoginRoles() {
                   {role.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-center gap-2 text-white/40 text-xs"
+                      className="flex items-center gap-2 text-[var(--fg-40)] text-xs"
                     >
-                      <span className="w-1 h-1 rounded-full bg-white/40" />
+                      <span className="w-1 h-1 rounded-full bg-[var(--fg-40)]" />
                       {feature}
                     </li>
                   ))}
@@ -104,7 +104,7 @@ export default function LoginRoles() {
                 {/* CTA */}
                 <Link
                   href={role.href}
-                  className="inline-flex items-center gap-2 text-white text-sm font-medium group/link"
+                  className="inline-flex items-center gap-2 text-[var(--fg)] text-sm font-medium group/link"
                 >
                   Ingresar
                   <ArrowRight
@@ -120,13 +120,13 @@ export default function LoginRoles() {
 
         {/* Help text */}
         <div className="mt-12 text-center">
-          <p className="text-white/40 text-sm">
+          <p className="text-[var(--fg-40)] text-sm">
             Primera vez?{" "}
-            <Link href="/registro" className="text-white hover:underline">
+            <Link href="/registro" className="text-[var(--fg)] hover:underline">
               Crea tu cuenta de suscriptor
             </Link>
             {" "}o{" "}
-            <Link href="#" className="text-white hover:underline">
+            <Link href="#" className="text-[var(--fg)] hover:underline">
               contacta a un líder
             </Link>
           </p>

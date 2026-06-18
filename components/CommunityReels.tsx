@@ -4,56 +4,55 @@ import { motion } from "framer-motion";
 import { ArrowRight, Instagram } from "lucide-react";
 import ReelGrid from "./ReelGrid";
 
-// Placeholder reels - these would come from a CMS in production
 const communityReels = [
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/ABC123/",
-    caption: "Servicio dominical - Sede Miraflores",
+    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
+    caption: "Pedida de enamoramiento | Freddy & Carla",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/DEF456/",
-    caption: "Devocional universitario PUCP",
-  },
-  {
-    platform: "tiktok" as const,
-    url: "https://www.tiktok.com/@iglesiacristianalima/video/789",
-    caption: "Retiro de jóvenes 2026",
+    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
+    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/GHI789/",
-    caption: "Bautismos - Febrero 2026",
+    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
+    caption: "Entresemanal - Cumpleaños de Waldir",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/JKL012/",
-    caption: "Ministerio de casados",
+    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
+    caption: "Servicio Dominical y Bautismo de Amalia",
   },
   {
-    platform: "tiktok" as const,
-    url: "https://www.tiktok.com/@iglesiacristianalima/video/345",
-    caption: "Alabanza domingo pasado",
+    platform: "instagram" as const,
+    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
+    caption: "Entresemanal de Hombres",
+  },
+  {
+    platform: "instagram" as const,
+    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
+    caption: "Staff de Líderes - Estudio bíblico",
   },
 ];
 
 export default function CommunityReels() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5 overflow-hidden">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)] overflow-hidden">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
           <div className="flex items-center gap-3">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/60 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--fg-60)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--fg)]" />
             </span>
-            <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+            <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
               En vivo · Esta semana
             </span>
           </div>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -64,23 +63,23 @@ export default function CommunityReels() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Así se vive
               <br />
-              <em className="italic font-light text-white/70">la comunidad.</em>
+              <em className="italic font-light text-[var(--fg-70)]">la comunidad.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8 flex flex-col justify-between">
-            <p className="text-white/60 text-lg leading-relaxed mb-6">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed mb-6">
               No te lo contamos, te lo mostramos. Momentos reales de nuestra
               familia en Lima.
             </p>
             <a
-              href="https://instagram.com/iglesiacristianalima"
+              href="https://instagram.com/limaicc"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-white transition-colors group"
+              className="inline-flex items-center gap-2 text-[var(--fg-60)] text-sm hover:text-[var(--fg)] transition-colors group"
             >
               <Instagram size={16} strokeWidth={1.5} />
               Síguenos en Instagram

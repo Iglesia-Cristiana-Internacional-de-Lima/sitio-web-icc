@@ -26,15 +26,15 @@ export default function Ministerios() {
   return (
     <section
       id="ministerios"
-      className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5"
+      className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]"
     >
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             04 — Ministerios
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -45,15 +45,15 @@ export default function Ministerios() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Hay un lugar
               <br />
-              <em className="italic font-light text-white/70">para ti.</em>
+              <em className="italic font-light text-[var(--fg-70)]">para ti.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8">
-            <p className="text-white/60 text-lg leading-relaxed">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed">
               Cada etapa de la vida tiene retos diferentes. Por eso tenemos
               ministerios pensados para cada uno. Encuentra el tuyo.
             </p>
@@ -63,27 +63,27 @@ export default function Ministerios() {
         {/* Cards grid - editorial layout */}
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[var(--fg-30)] border-t-[var(--fg)] rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--line-strong)]">
             {ministerios.map((m, i) => (
               <MinisterioCard key={m.id} m={m} index={i} />
             ))}
             {/* Filler card */}
-            <div className="bg-[#0d0d0d] p-8 flex flex-col justify-between min-h-[400px]">
-              <span className="font-mono text-[10px] tracking-[0.32em] text-white/40 uppercase">
+            <div className="bg-[var(--bg)] p-8 flex flex-col justify-between min-h-[400px]">
+              <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--fg-40)] uppercase">
                 ¿No encuentras el tuyo?
               </span>
               <div>
-                <p className="font-display text-3xl text-white mb-4">
+                <p className="font-display text-3xl text-[var(--fg)] mb-4">
                   Conversemos.
                 </p>
-                <p className="text-white/50 text-sm mb-6">
+                <p className="text-[var(--fg-50)] text-sm mb-6">
                   Escríbenos por WhatsApp y te conectamos con la comunidad
                   correcta.
                 </p>
-                <button className="btn-line text-white text-sm">
+                <button className="btn-line text-[var(--fg)] text-sm">
                   Hablar con alguien <ArrowUpRight size={16} strokeWidth={1.5} />
                 </button>
               </div>

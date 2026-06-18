@@ -6,10 +6,10 @@ import Link from "next/link";
 
 export default function EstudiosCTA() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5 overflow-hidden">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)] overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/[0.02] rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--fg-10)] rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-[1600px] mx-auto relative z-10">
@@ -19,7 +19,7 @@ export default function EstudiosCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="font-display text-[clamp(3rem,8vw,7rem)] text-white leading-[0.9]"
+            className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
           >
             Tu turno.
           </motion.h2>
@@ -29,7 +29,7 @@ export default function EstudiosCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="text-white/60 text-xl leading-relaxed mt-8 max-w-xl mx-auto"
+            className="text-[var(--fg-60)] text-xl leading-relaxed mt-8 max-w-xl mx-auto"
           >
             No necesitas tener todo claro. No necesitas saber nada de la Biblia.
             Solo necesitas querer conversar.
@@ -60,7 +60,7 @@ export default function EstudiosCTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="text-white/40 text-sm mt-8"
+            className="text-[var(--fg-40)] text-sm mt-8"
           >
             Sin costo. Sin compromiso. Solo una conversación.
           </motion.p>

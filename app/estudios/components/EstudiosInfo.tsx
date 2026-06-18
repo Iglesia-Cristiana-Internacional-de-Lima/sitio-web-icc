@@ -50,14 +50,14 @@ const steps = [
 
 export default function EstudiosInfo() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             01 — Cómo funciona
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Features grid */}
@@ -71,17 +71,17 @@ export default function EstudiosInfo() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="group"
             >
-              <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-6 group-hover:bg-white/10 transition-colors">
+              <div className="w-14 h-14 rounded-full bg-[var(--surface-5)] flex items-center justify-center mb-6 group-hover:bg-[var(--surface-10)] transition-colors">
                 <feature.icon
                   size={24}
                   strokeWidth={1.5}
-                  className="text-white/70"
+                  className="text-[var(--fg-70)]"
                 />
               </div>
-              <h3 className="font-display text-2xl text-white mb-3">
+              <h3 className="font-display text-2xl text-[var(--fg)] mb-3">
                 {feature.title}
               </h3>
-              <p className="text-white/50 text-sm leading-relaxed">
+              <p className="text-[var(--fg-50)] text-sm leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
@@ -96,16 +96,16 @@ export default function EstudiosInfo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,5vw,4.5rem)] text-white leading-tight sticky top-32"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)] sticky top-32"
             >
               Tres pasos.
               <br />
-              <em className="italic font-light text-white/70">Sin complicaciones.</em>
+              <em className="italic font-light text-[var(--fg-70)]">Sin complicaciones.</em>
             </motion.h2>
           </div>
 
           <div className="lg:col-span-7">
-            <div className="space-y-px bg-white/5">
+            <div className="space-y-px bg-[var(--line)]">
               {steps.map((step, i) => (
                 <motion.div
                   key={step.n}
@@ -113,17 +113,17 @@ export default function EstudiosInfo() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="bg-[#0d0d0d] p-8 md:p-10 group hover:bg-[#191919] transition-colors duration-500"
+                  className="bg-[var(--bg)] p-8 md:p-10 group hover:bg-[var(--surface)] transition-colors duration-500"
                 >
                   <div className="flex items-start gap-6">
-                    <span className="font-mono text-4xl md:text-5xl text-white/20 group-hover:text-white/40 transition-colors">
+                    <span className="font-mono text-4xl md:text-5xl text-[var(--fg-20)] group-hover:text-[var(--fg-40)] transition-colors">
                       {step.n}
                     </span>
                     <div className="flex-1 pt-2">
-                      <h3 className="font-display text-2xl md:text-3xl text-white mb-3 group-hover:italic transition-all">
+                      <h3 className="font-display text-2xl md:text-3xl text-[var(--fg)] mb-3 group-hover:italic transition-all">
                         {step.title}
                       </h3>
-                      <p className="text-white/50 text-base leading-relaxed">
+                      <p className="text-[var(--fg-50)] text-base leading-relaxed">
                         {step.desc}
                       </p>
                     </div>

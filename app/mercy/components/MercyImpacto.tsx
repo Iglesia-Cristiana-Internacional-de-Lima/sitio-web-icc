@@ -38,14 +38,14 @@ const areas = [
 
 export default function MercyImpacto() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             01 — Impacto
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -56,15 +56,15 @@ export default function MercyImpacto() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,6vw,5rem)] text-white leading-tight"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Números que
               <br />
-              <em className="italic font-light text-white/70">importan.</em>
+              <em className="italic font-light text-[var(--fg-70)]">importan.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8">
-            <p className="text-white/60 text-lg leading-relaxed">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed">
               Cada número representa una vida tocada, una familia ayudada, una
               comunidad transformada. Esto es lo que hacemos juntos.
             </p>
@@ -72,7 +72,7 @@ export default function MercyImpacto() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-32 pb-20 border-b border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-32 pb-20 border-b border-[var(--line)]">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -82,13 +82,13 @@ export default function MercyImpacto() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="text-center md:text-left"
             >
-              <span className="font-display text-5xl md:text-6xl text-white">
+              <span className="font-display text-5xl md:text-6xl text-[var(--fg)]">
                 {stat.number}
               </span>
-              <p className="font-mono text-[11px] tracking-[0.28em] text-white/70 uppercase mt-3">
+              <p className="font-mono text-[11px] tracking-[0.28em] text-[var(--fg-70)] uppercase mt-3">
                 {stat.label}
               </p>
-              <p className="text-white/40 text-sm mt-1">{stat.desc}</p>
+              <p className="text-[var(--fg-40)] text-sm mt-1">{stat.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -100,12 +100,12 @@ export default function MercyImpacto() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="font-display text-3xl text-white mb-12"
+            className="font-display text-3xl text-[var(--fg)] mb-12"
           >
             Áreas de servicio
           </motion.h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--line)]">
             {areas.map((area, i) => (
               <motion.div
                 key={area.title}
@@ -113,7 +113,7 @@ export default function MercyImpacto() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group bg-[#0d0d0d] overflow-hidden"
+                className="group bg-[var(--surface)] overflow-hidden"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
@@ -126,10 +126,10 @@ export default function MercyImpacto() {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h4 className="font-display text-2xl text-white mb-2 group-hover:italic transition-all">
+                  <h4 className="font-display text-2xl text-[var(--fg)] mb-2 group-hover:italic transition-all">
                     {area.title}
                   </h4>
-                  <p className="text-white/50 text-sm leading-relaxed">
+                  <p className="text-[var(--fg-50)] text-sm leading-relaxed">
                     {area.description}
                   </p>
                 </div>

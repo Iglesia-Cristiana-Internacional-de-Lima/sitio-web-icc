@@ -80,7 +80,7 @@ export default function EventosMapa() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,6vw,5rem)] text-white leading-tight"
+              className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Encuentra una charla
               <br />
