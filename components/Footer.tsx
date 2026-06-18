@@ -77,6 +77,7 @@ export default function Footer() {
                   disabled={status === "loading"}
                   className="bg-transparent text-white text-lg py-3 border-b border-white/30 focus:border-white outline-none placeholder:text-white/30 disabled:opacity-50 transition-colors"
                 />
+
                 <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
                   <input
                     type="email"
@@ -85,6 +86,7 @@ export default function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                     disabled={status === "loading"}
+
                     className="flex-1 bg-transparent text-white text-lg py-3 outline-none placeholder:text-white/30 disabled:opacity-50"
                   />
                   <button
