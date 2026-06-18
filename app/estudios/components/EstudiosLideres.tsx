@@ -282,13 +282,6 @@ export default function EstudiosLideres() {
             <button
               onClick={handleAutoAssign}
               className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[var(--line-strong)] text-[var(--fg-70)] text-sm hover:bg-[var(--surface-5)] hover:border-[var(--fg-30)] transition-all"
-          >
-            <p className="text-white/50 text-sm mb-4">
-              No sabes con quién conversar?
-            </p>
-            <button
-              onClick={handleAutoAssign}
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 text-sm hover:bg-white/5 hover:border-white/30 transition-all"
             >
               <Shuffle size={18} strokeWidth={1.5} />
               Asignarme un líder automáticamente
@@ -431,7 +424,6 @@ export default function EstudiosLideres() {
                     <p className="text-[var(--fg)] text-sm">{user?.nombre}</p>
                     <p className="text-[var(--fg-50)] text-xs">{user?.email}</p>
                   </div>
-                </div>
                 </div>
 
                 <div>

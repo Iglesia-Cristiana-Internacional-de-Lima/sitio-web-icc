@@ -7,31 +7,31 @@ import {
   Clock,
   MapPin,
   Globe,
-  User,
   ArrowLeft,
   Loader2,
-  Tag,
 } from 'lucide-react';
 
-interface EventoDetalle {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  ubicacion: string;
-  latitud?: number | null;
-  longitud?: number | null;
-  responsable: string;
-  tipo: string;
+interface SedeInfo {
+  id: number;
+  nombre: string;
+  direccion: string;
+  distrito: string | null;
+  lat: number | null;
+  lng: number | null;
 }
 
-const TIPO_A_CATEGORIA: Record<string, string> = {
-  Dominical: 'Servicios dominicales',
-  Ministerial: 'Reuniones ministeriales',
-  Universitario: 'Devocionales universitarios',
-  Charla: 'Charlas bíblicas',
-  Especial: 'Actividades especiales',
-};
+interface EventoDetalle {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  fecha: string;
+  horaInicio: string;
+  horaFin: string | null;
+  sede: SedeInfo | null;
+  imagen: string | null;
+  destacado: boolean;
+  activo: boolean;
+}
 
 function formatearFecha(iso: string) {
   const d = new Date(iso);
@@ -43,13 +43,12 @@ function formatearFecha(iso: string) {
   });
 }
 
-function formatearHora(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString('es-PE', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
+function formatearHora(hora: string) {
+  const [h, m] = hora.split(':');
+  const horas = parseInt(h, 10);
+  const ampm = horas >= 12 ? 'p. m.' : 'a. m.';
+  const h12 = horas % 12 || 12;
+  return `${h12}:${m} ${ampm}`;
 }
 
 export default function EventoDetallePage() {
@@ -107,8 +106,6 @@ export default function EventoDetallePage() {
     );
   }
 
-  const categoria = TIPO_A_CATEGORIA[evento.tipo] || evento.tipo;
-
   return (
     <main className="bg-[var(--bg)] text-[var(--fg)] pt-24 pb-24 px-4 sm:px-6 lg:px-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -121,14 +118,16 @@ export default function EventoDetallePage() {
           Volver a eventos
         </button>
 
+        {/* Imagen destacada */}
+        {evento.imagen && (
+          <div
+            className="w-full h-64 md:h-96 rounded-2xl bg-cover bg-center mb-8"
+            style={{ backgroundImage: `url(${evento.imagen})` }}
+          />
+        )}
+
         {/* Tarjeta principal */}
         <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-8 md:p-10">
-          {/* Tipo */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface-10)] text-[var(--fg-60)] text-[10px] font-semibold tracking-wider uppercase mb-5">
-            <Tag size={12} />
-            {categoria}
-          </div>
-
           {/* Título */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--fg)] mb-6">
             {evento.titulo}
@@ -159,40 +158,35 @@ export default function EventoDetallePage() {
                   Hora
                 </p>
                 <p className="text-[var(--fg)] text-sm font-medium">
-                  {formatearHora(evento.fecha)}
+                  {formatearHora(evento.horaInicio)}
+                  {evento.horaFin && ` — ${formatearHora(evento.horaFin)}`}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
-              <MapPin size={18} className="text-[var(--fg-40)] shrink-0" />
-              <div>
-                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
-                  Ubicación
-                </p>
-                <p className="text-[var(--fg)] text-sm font-medium">
-                  {evento.ubicacion}
-                </p>
+            {evento.sede && (
+              <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
+                <MapPin size={18} className="text-[var(--fg-40)] shrink-0" />
+                <div>
+                  <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
+                    Ubicación
+                  </p>
+                  <p className="text-[var(--fg)] text-sm font-medium">
+                    {evento.sede.nombre}
+                  </p>
+                  <p className="text-[var(--fg-50)] text-xs">
+                    {evento.sede.direccion}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
-              <User size={18} className="text-[var(--fg-40)] shrink-0" />
-              <div>
-                <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
-                  Organiza
-                </p>
-                <p className="text-[var(--fg)] text-sm font-medium">
-                  {evento.responsable}
-                </p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Mapa */}
-          {evento.latitud && evento.longitud ? (
+          {evento.sede?.lat && evento.sede?.lng ? (
             <div className="bg-[var(--bg)] border border-[var(--line)] rounded-xl overflow-hidden">
               <iframe
                 title={`Ubicación de ${evento.titulo}`}
-                src={`https://maps.google.com/maps?q=${evento.latitud},${evento.longitud}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                src={`https://maps.google.com/maps?q=${evento.sede.lat},${evento.sede.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                 className="w-full aspect-video"
                 loading="lazy"
                 allowFullScreen

@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET: Obtener un evento por ID
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
+    const parsedId = parseInt(id, 10);
 
     const evento = await prisma.evento.findUnique({
-      where: { id },
+      where: { id: parsedId },
+      include: { sede: true },
     });
 
     if (!evento) {

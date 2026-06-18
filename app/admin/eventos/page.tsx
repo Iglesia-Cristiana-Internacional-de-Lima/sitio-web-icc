@@ -5,47 +5,55 @@ import { Trash2, Loader2, Plus, Pencil, Eye, EyeOff } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-interface Evento {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  ubicacion: string;
-  latitud?: number | null;
-  longitud?: number | null;
-  responsable: string;
-  tipo: string;
-  publicado: boolean;
+interface SedeInfo {
+  id: number;
+  nombre: string;
+  direccion: string;
 }
 
-const TIPOS = ['Dominical', 'Ministerial', 'Universitario', 'Charla', 'Especial'];
+interface Evento {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  fecha: string;
+  horaInicio: string;
+  horaFin: string | null;
+  sede: SedeInfo | null;
+  sedeId: number | null;
+  imagen: string | null;
+  destacado: boolean;
+  activo: boolean;
+}
 
 const INITIAL_FORM = {
   titulo: '',
   descripcion: '',
   fecha: '',
-  ubicacion: '',
-  latitud: '',
-  longitud: '',
-  responsable: '',
-  tipo: 'Dominical',
+  horaInicio: '',
+  horaFin: '',
+  sedeId: '',
+  imagen: '',
 };
 
 type FormFields = typeof INITIAL_FORM;
 
 export default function AdminEventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([]);
+  const [sedes, setSedes] = useState<SedeInfo[]>([]);
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [form, setForm] = useState<FormFields>(INITIAL_FORM);
-  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [editandoId, setEditandoId] = useState<number | null>(null);
 
   const cargarEventos = () => {
     setCargando(true);
-    fetch('/api/events')
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.success) setEventos(json.data);
+    Promise.all([
+      fetch('/api/events').then((r) => r.json()),
+      fetch('/api/public/sedes').then((r) => r.json()),
+    ])
+      .then(([eventosJson, sedesJson]) => {
+        if (eventosJson.success) setEventos(eventosJson.data);
+        if (sedesJson.success) setSedes(sedesJson.data);
       })
       .finally(() => setCargando(false));
   };
@@ -60,13 +68,12 @@ export default function AdminEventosPage() {
     setEditandoId(evento.id);
     setForm({
       titulo: evento.titulo,
-      descripcion: evento.descripcion,
+      descripcion: evento.descripcion || '',
       fecha: evento.fecha.slice(0, 16),
-      ubicacion: evento.ubicacion,
-      latitud: evento.latitud?.toString() ?? '',
-      longitud: evento.longitud?.toString() ?? '',
-      responsable: evento.responsable,
-      tipo: evento.tipo,
+      horaInicio: evento.horaInicio,
+      horaFin: evento.horaFin || '',
+      sedeId: evento.sedeId?.toString() ?? '',
+      imagen: evento.imagen || '',
     });
   };
 
@@ -83,13 +90,11 @@ export default function AdminEventosPage() {
       titulo: form.titulo,
       descripcion: form.descripcion,
       fecha: form.fecha,
-      ubicacion: form.ubicacion,
-      responsable: form.responsable,
-      tipo: form.tipo,
+      horaInicio: form.horaInicio,
+      horaFin: form.horaFin || null,
+      sedeId: form.sedeId ? parseInt(form.sedeId, 10) : null,
+      imagen: form.imagen || null,
     };
-
-    if (form.latitud) body.latitud = parseFloat(form.latitud);
-    if (form.longitud) body.longitud = parseFloat(form.longitud);
 
     try {
       const url = editandoId ? `/api/events?id=${editandoId}` : '/api/events';
@@ -118,7 +123,7 @@ export default function AdminEventosPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar este evento?')) return;
 
     try {
@@ -136,12 +141,12 @@ export default function AdminEventosPage() {
     }
   };
 
-  const handleTogglePublicado = async (evento: Evento) => {
+  const handleToggleActivo = async (evento: Evento) => {
     try {
       const res = await fetch(`/api/events?id=${evento.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ publicado: !evento.publicado }),
+        body: JSON.stringify({ activo: !evento.activo }),
       });
 
       const json = await res.json();
@@ -152,7 +157,7 @@ export default function AdminEventosPage() {
       }
 
       setEventos((prev) =>
-        prev.map((e) => (e.id === evento.id ? { ...e, publicado: !e.publicado } : e))
+        prev.map((e) => (e.id === evento.id ? { ...e, activo: !e.activo } : e))
       );
     } catch {
       alert('Error de conexión');
@@ -218,22 +223,6 @@ export default function AdminEventosPage() {
 
               <div>
                 <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
-                  Tipo
-                </label>
-                <select
-                  name="tipo"
-                  value={form.tipo}
-                  onChange={handleChange}
-                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gray-600 transition-colors"
-                >
-                  {TIPOS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
                   Fecha
                 </label>
                 <input
@@ -248,61 +237,58 @@ export default function AdminEventosPage() {
 
               <div>
                 <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
-                  Ubicación
+                  Hora Inicio
                 </label>
                 <input
-                  name="ubicacion"
-                  value={form.ubicacion}
+                  name="horaInicio"
+                  type="time"
+                  value={form.horaInicio}
                   onChange={handleChange}
                   required
-                  minLength={3}
-                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gray-600 transition-colors"
-                  placeholder="Sede Central — Lima"
+                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white [color-scheme:dark] focus:outline-none focus:border-gray-600 transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
-                  Responsable
+                  Hora Fin
                 </label>
                 <input
-                  name="responsable"
-                  value={form.responsable}
+                  name="horaFin"
+                  type="time"
+                  value={form.horaFin}
                   onChange={handleChange}
-                  required
-                  minLength={3}
-                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gray-600 transition-colors"
-                  placeholder="Equipo de Alabanza"
-                />
-              </div>
-
-              <div className="md:col-span-1">
-                <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
-                  Latitud
-                </label>
-                <input
-                  name="latitud"
-                  type="number"
-                  step="any"
-                  value={form.latitud}
-                  onChange={handleChange}
-                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gray-600 transition-colors"
-                  placeholder="-12.0464"
+                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white [color-scheme:dark] focus:outline-none focus:border-gray-600 transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
-                  Longitud
+                  Sede
+                </label>
+                <select
+                  name="sedeId"
+                  value={form.sedeId}
+                  onChange={handleChange}
+                  className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gray-600 transition-colors"
+                >
+                  <option value="">Seleccionar sede</option>
+                  {sedes.map((s) => (
+                    <option key={s.id} value={s.id}>{s.nombre}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">
+                  URL de Imagen
                 </label>
                 <input
-                  name="longitud"
-                  type="number"
-                  step="any"
-                  value={form.longitud}
+                  name="imagen"
+                  value={form.imagen}
                   onChange={handleChange}
                   className="w-full bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gray-600 transition-colors"
-                  placeholder="-77.0428"
+                  placeholder="https://..."
                 />
               </div>
 
@@ -368,7 +354,7 @@ export default function AdminEventosPage() {
                   <thead>
                     <tr className="border-b border-gray-800 text-gray-500 text-[10px] uppercase tracking-wider font-semibold">
                       <th className="text-left px-6 py-3">Título</th>
-                      <th className="text-left px-6 py-3">Tipo</th>
+                      <th className="text-left px-6 py-3">Sede</th>
                       <th className="text-left px-6 py-3">Fecha</th>
                       <th className="text-center px-6 py-3">Estado</th>
                       <th className="text-right px-6 py-3">Acciones</th>
@@ -384,7 +370,7 @@ export default function AdminEventosPage() {
                           {evento.titulo}
                         </td>
                         <td className="px-6 py-3 text-gray-400">
-                          {evento.tipo}
+                          {evento.sede?.nombre || '—'}
                         </td>
                         <td className="px-6 py-3 text-gray-400">
                           {formatearFecha(evento.fecha)}
@@ -392,12 +378,12 @@ export default function AdminEventosPage() {
                         <td className="px-6 py-3 text-center">
                           <span
                             className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider ${
-                              evento.publicado
+                              evento.activo
                                 ? 'bg-green-900/50 text-green-400'
                                 : 'bg-yellow-900/50 text-yellow-400'
                             }`}
                           >
-                            {evento.publicado ? 'Publicado' : 'Borrador'}
+                            {evento.activo ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>
                         <td className="px-6 py-3 text-right">
@@ -410,14 +396,14 @@ export default function AdminEventosPage() {
                               Editar
                             </button>
                             <button
-                              onClick={() => handleTogglePublicado(evento)}
+                              onClick={() => handleToggleActivo(evento)}
                               className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all border ${
-                                evento.publicado
+                                evento.activo
                                   ? 'text-gray-400 hover:bg-gray-500/10 hover:border-gray-500/30 border-transparent'
                                   : 'text-green-400 hover:bg-green-500/10 hover:border-green-500/30 border-transparent'
                               }`}
                             >
-                              {evento.publicado ? (
+                              {evento.activo ? (
                                 <><EyeOff size={12} /> Ocultar</>
                               ) : (
                                 <><Eye size={12} /> Publicar</>

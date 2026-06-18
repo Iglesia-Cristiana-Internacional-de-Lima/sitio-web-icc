@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -33,6 +34,7 @@ export default function Footer() {
       }
 
       setStatus("success");
+      setSubmitted(true);
       setMessage(data?.message || "Listo. Nos vemos pronto.");
     } catch (err: any) {
       setStatus("error");
@@ -85,7 +87,7 @@ export default function Footer() {
                 </button>
               </div>
             ) : (
-              <motion.div
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="font-display text-2xl text-white"

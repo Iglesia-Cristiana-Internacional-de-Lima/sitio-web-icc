@@ -1,34 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET: Obtener eventos (con filtro opcional por tipo y publicado)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const tipo = searchParams.get("tipo");
-    const publicado = searchParams.get("publicado");
+    const destacado = searchParams.get("destacado");
+    const soloActivos = searchParams.get("activo") !== "false";
 
     const where: Record<string, unknown> = {};
 
-    if (tipo) {
-      where.tipo = tipo;
+    if (soloActivos) {
+      where.activo = true;
     }
 
-    if (publicado === "true") {
-      where.publicado = true;
+    if (destacado === "true") {
+      where.destacado = true;
     }
 
     const eventos = await prisma.evento.findMany({
       where,
-      orderBy: {
-        fecha: "asc",
-      },
+      include: { sede: true },
+      orderBy: { fecha: "asc" },
     });
 
-    return NextResponse.json({
-      success: true,
-      data: eventos,
-    });
+    return NextResponse.json({ success: true, data: eventos });
   } catch (error) {
     console.error("Error obteniendo eventos:", error);
     return NextResponse.json(
@@ -38,12 +33,59 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT: Actualizar un evento por ID
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const id = request.nextUrl.searchParams.get("id") || body.id || null;
+    if (!body.titulo || String(body.titulo).trim().length < 3) {
+      return NextResponse.json(
+        { error: "El título es requerido (mínimo 3 caracteres)" },
+        { status: 400 }
+      );
+    }
+
+    if (!body.fecha) {
+      return NextResponse.json(
+        { error: "La fecha es requerida" },
+        { status: 400 }
+      );
+    }
+
+    if (!body.horaInicio) {
+      return NextResponse.json(
+        { error: "La hora de inicio es requerida" },
+        { status: 400 }
+      );
+    }
+
+    const evento = await prisma.evento.create({
+      data: {
+        titulo: String(body.titulo).trim(),
+        descripcion: body.descripcion ? String(body.descripcion).trim() : null,
+        fecha: new Date(body.fecha),
+        horaInicio: String(body.horaInicio).trim(),
+        horaFin: body.horaFin ? String(body.horaFin).trim() : null,
+        sedeId: body.sedeId ? parseInt(String(body.sedeId), 10) : null,
+        imagen: body.imagen || null,
+        destacado: body.destacado ?? false,
+        activo: body.activo ?? true,
+      },
+    });
+
+    return NextResponse.json({ success: true, data: evento }, { status: 201 });
+  } catch (error) {
+    console.error("Error creando evento:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const id = request.nextUrl.searchParams.get("id") || body.id;
 
     if (!id) {
       return NextResponse.json(
@@ -53,7 +95,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const eventoExistente = await prisma.evento.findUnique({
-      where: { id },
+      where: { id: parseInt(String(id), 10) },
     });
 
     if (!eventoExistente) {
@@ -65,7 +107,7 @@ export async function PUT(request: NextRequest) {
 
     const data: Record<string, unknown> = {};
 
-    if (body.titulo !== undefined && body.titulo !== null) {
+    if (body.titulo !== undefined) {
       if (String(body.titulo).trim().length < 3) {
         return NextResponse.json(
           { error: "El título debe tener al menos 3 caracteres" },
@@ -75,64 +117,39 @@ export async function PUT(request: NextRequest) {
       data.titulo = String(body.titulo).trim();
     }
 
-    if (body.descripcion !== undefined && body.descripcion !== null) {
-      if (String(body.descripcion).trim().length < 10) {
-        return NextResponse.json(
-          { error: "La descripción debe tener al menos 10 caracteres" },
-          { status: 400 }
-        );
-      }
-      data.descripcion = String(body.descripcion).trim();
+    if (body.descripcion !== undefined) {
+      data.descripcion = body.descripcion ? String(body.descripcion).trim() : null;
     }
 
-    if (body.fecha !== undefined && body.fecha !== null) {
+    if (body.fecha !== undefined) {
       data.fecha = new Date(body.fecha);
     }
 
-    if (body.ubicacion !== undefined && body.ubicacion !== null) {
-      if (String(body.ubicacion).trim().length < 3) {
-        return NextResponse.json(
-          { error: "La ubicación debe tener al menos 3 caracteres" },
-          { status: 400 }
-        );
-      }
-      data.ubicacion = String(body.ubicacion).trim();
+    if (body.horaInicio !== undefined) {
+      data.horaInicio = String(body.horaInicio).trim();
     }
 
-    if (body.responsable !== undefined && body.responsable !== null) {
-      if (String(body.responsable).trim().length < 3) {
-        return NextResponse.json(
-          { error: "El responsable debe tener al menos 3 caracteres" },
-          { status: 400 }
-        );
-      }
-      data.responsable = String(body.responsable).trim();
+    if (body.horaFin !== undefined) {
+      data.horaFin = body.horaFin ? String(body.horaFin).trim() : null;
     }
 
-    if (body.tipo !== undefined && body.tipo !== null) {
-      const VALID_TIPOS = ["Dominical", "Ministerial", "Universitario", "Charla", "Especial"];
-      if (!VALID_TIPOS.includes(body.tipo)) {
-        return NextResponse.json(
-          { error: `Tipo inválido. Debe ser: ${VALID_TIPOS.join(", ")}` },
-          { status: 400 }
-        );
-      }
-      data.tipo = body.tipo;
+    if (body.sedeId !== undefined) {
+      data.sedeId = body.sedeId ? parseInt(String(body.sedeId), 10) : null;
     }
 
-    if (body.latitud !== undefined) data.latitud = body.latitud;
-    if (body.longitud !== undefined) data.longitud = body.longitud;
-    if (body.publicado !== undefined) data.publicado = body.publicado;
+    if (body.imagen !== undefined) {
+      data.imagen = body.imagen || null;
+    }
+
+    if (body.destacado !== undefined) data.destacado = body.destacado;
+    if (body.activo !== undefined) data.activo = body.activo;
 
     const evento = await prisma.evento.update({
-      where: { id },
+      where: { id: parseInt(String(id), 10) },
       data,
     });
 
-    return NextResponse.json({
-      success: true,
-      data: evento,
-    });
+    return NextResponse.json({ success: true, data: evento });
   } catch (error) {
     console.error("Error actualizando evento:", error);
     return NextResponse.json(
@@ -145,7 +162,6 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE: Eliminar un evento por ID
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -158,8 +174,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    const parsedId = parseInt(id, 10);
+
     const evento = await prisma.evento.findUnique({
-      where: { id },
+      where: { id: parsedId },
     });
 
     if (!evento) {
@@ -170,7 +188,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     await prisma.evento.delete({
-      where: { id },
+      where: { id: parsedId },
     });
 
     return NextResponse.json({
@@ -179,98 +197,6 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error eliminando evento:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
-  }
-}
-
-// POST: Crear un nuevo evento (admin)
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    // Validaciones
-    if (!body.titulo || body.titulo.trim().length < 3) {
-      return NextResponse.json(
-        { error: "El título es requerido (mínimo 3 caracteres)" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.descripcion || body.descripcion.trim().length < 10) {
-      return NextResponse.json(
-        { error: "La descripción es requerida (mínimo 10 caracteres)" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.fecha) {
-      return NextResponse.json(
-        { error: "La fecha es requerida" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.ubicacion || body.ubicacion.trim().length < 3) {
-      return NextResponse.json(
-        { error: "La ubicación es requerida (mínimo 3 caracteres)" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.responsable || body.responsable.trim().length < 3) {
-      return NextResponse.json(
-        { error: "El responsable es requerido (mínimo 3 caracteres)" },
-        { status: 400 }
-      );
-    }
-
-    if (!body.tipo) {
-      return NextResponse.json(
-        {
-          error:
-            "El tipo es requerido: Dominical, Ministerial, Universitario, Charla o Especial",
-        },
-        { status: 400 }
-      );
-    }
-
-    const VALID_TIPOS = ["Dominical", "Ministerial", "Universitario", "Charla", "Especial"];
-
-    if (!VALID_TIPOS.includes(body.tipo)) {
-      return NextResponse.json(
-        {
-          error: `Tipo inválido. Debe ser: ${VALID_TIPOS.join(", ")}`,
-        },
-        { status: 400 }
-      );
-    }
-
-    const evento = await prisma.evento.create({
-      data: {
-        titulo: body.titulo.trim(),
-        descripcion: body.descripcion.trim(),
-        fecha: new Date(body.fecha),
-        ubicacion: body.ubicacion.trim(),
-        latitud: body.latitud ?? null,
-        longitud: body.longitud ?? null,
-        responsable: body.responsable.trim(),
-        tipo: body.tipo,
-        publicado: false,
-      },
-    });
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: evento,
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Error creando evento:", error);
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }

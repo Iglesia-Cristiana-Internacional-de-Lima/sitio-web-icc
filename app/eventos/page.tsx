@@ -3,47 +3,30 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, ArrowRight, Loader2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Marquee from '@/components/Marquee';
 import Footer from '@/components/Footer';
 
-type Categoria =
-  | 'Todos'
-  | 'Servicios dominicales'
-  | 'Reuniones ministeriales'
-  | 'Devocionales universitarios'
-  | 'Charlas bíblicas'
-  | 'Actividades especiales';
-
-interface EventoAPI {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  ubicacion: string;
-  responsable: string;
-  tipo: string;
-  latitud?: number | null;
-  longitud?: number | null;
+interface SedeInfo {
+  id: number;
+  nombre: string;
+  direccion: string;
+  distrito: string | null;
 }
 
-const CATEGORIAS: Categoria[] = [
-  'Todos',
-  'Servicios dominicales',
-  'Reuniones ministeriales',
-  'Devocionales universitarios',
-  'Charlas bíblicas',
-  'Actividades especiales',
-];
-
-const TIPO_A_CATEGORIA: Record<string, Categoria> = {
-  Dominical: 'Servicios dominicales',
-  Ministerial: 'Reuniones ministeriales',
-  Universitario: 'Devocionales universitarios',
-  Charla: 'Charlas bíblicas',
-  Especial: 'Actividades especiales',
-};
+interface EventoAPI {
+  id: number;
+  titulo: string;
+  descripcion: string | null;
+  fecha: string;
+  horaInicio: string;
+  horaFin: string | null;
+  sede: SedeInfo | null;
+  imagen: string | null;
+  destacado: boolean;
+  activo: boolean;
+}
 
 function formatearFecha(iso: string) {
   const d = new Date(iso);
@@ -56,23 +39,21 @@ function formatearFecha(iso: string) {
   return d.toLocaleDateString('es-PE', opciones);
 }
 
-function formatearHora(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString('es-PE', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
+function formatearHora(hora: string) {
+  const [h, m] = hora.split(':');
+  const horas = parseInt(h, 10);
+  const ampm = horas >= 12 ? 'p. m.' : 'a. m.';
+  const h12 = horas % 12 || 12;
+  return `${h12}:${m} ${ampm}`;
 }
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<EventoAPI[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filtro, setFiltro] = useState<Categoria>('Todos');
 
   useEffect(() => {
-    fetch('/api/events?publicado=true')
+    fetch('/api/events?activo=true')
       .then((res) => res.json())
       .then((json) => {
         if (json.success) {
@@ -84,11 +65,6 @@ export default function EventosPage() {
       .catch(() => setError('Error de conexión al servidor'))
       .finally(() => setCargando(false));
   }, []);
-
-  const eventosFiltrados =
-    filtro === 'Todos'
-      ? eventos
-      : eventos.filter((e) => TIPO_A_CATEGORIA[e.tipo] === filtro);
 
   return (
     <main className="bg-[var(--bg)] text-[var(--fg)] relative">
@@ -178,23 +154,6 @@ export default function EventosPage() {
           <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
-        {/* Filtros */}
-        <div className="flex flex-wrap gap-2 mb-12">
-          {CATEGORIAS.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFiltro(cat)}
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                filtro === cat
-                  ? 'bg-[var(--inverse-bg)] text-[var(--inverse-fg)] font-semibold shadow-md'
-                  : 'bg-[var(--surface)] text-[var(--fg-60)] hover:text-[var(--fg)] border border-[var(--line)] hover:border-[var(--fg-40)]'
-              }`}
-            >
-              {cat === 'Todos' ? 'Todos los eventos' : cat}
-            </button>
-          ))}
-        </div>
-
         {/* Estados: cargando / error / vacío / grid */}
         {cargando ? (
           <div className="flex items-center justify-center py-24 gap-3 text-[var(--fg-60)]">
@@ -211,10 +170,10 @@ export default function EventosPage() {
               Reintentar
             </button>
           </div>
-        ) : eventosFiltrados.length === 0 ? (
+        ) : eventos.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-[var(--fg-40)] text-lg">
-              No hay eventos programados en esta categoría por ahora.
+              No hay eventos programados por ahora.
             </p>
             <p className="text-[var(--fg-30)] text-sm mt-2">
               Vuelve pronto o suscríbete para recibir notificaciones.
@@ -222,54 +181,52 @@ export default function EventosPage() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {eventosFiltrados.map((evento) => {
-              const categoria = TIPO_A_CATEGORIA[evento.tipo] || evento.tipo;
-              return (
-                <div
-                  key={evento.id}
-                  className="group bg-[var(--surface)] border border-[var(--line)] rounded-xl p-6 min-w-0 flex flex-col justify-between transition-all duration-300 hover:border-[var(--line-strong)]"
-                >
-                  <div>
-                    <span className="inline-block px-3 py-1 rounded-md text-[10px] font-semibold tracking-wider uppercase mb-4 bg-[var(--surface-10)] text-[var(--fg-60)]">
-                      {categoria}
-                    </span>
-                    <h3 className="text-xl font-bold text-[var(--fg)] mb-2 group-hover:text-[var(--fg-90)] transition-colors">
-                      {evento.titulo}
-                    </h3>
-                    <p className="text-[var(--fg-60)] text-sm leading-relaxed mb-6 line-clamp-3">
-                      {evento.descripcion}
-                    </p>
-                  </div>
+            {eventos.map((evento) => (
+              <div
+                key={evento.id}
+                className="group bg-[var(--surface)] border border-[var(--line)] rounded-xl p-6 min-w-0 flex flex-col justify-between transition-all duration-300 hover:border-[var(--line-strong)]"
+              >
+                <div>
+                  {evento.imagen && (
+                    <div
+                      className="w-full h-40 rounded-lg bg-cover bg-center mb-4"
+                      style={{ backgroundImage: `url(${evento.imagen})` }}
+                    />
+                  )}
+                  <h3 className="text-xl font-bold text-[var(--fg)] mb-2 group-hover:text-[var(--fg-90)] transition-colors">
+                    {evento.titulo}
+                  </h3>
+                  <p className="text-[var(--fg-60)] text-sm leading-relaxed mb-6 line-clamp-3">
+                    {evento.descripcion}
+                  </p>
+                </div>
 
-                  <div className="space-y-3 pt-4 border-t border-[var(--line)] text-sm text-[var(--fg-60)]">
-                    <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-[var(--fg-40)] shrink-0" />
-                      <span>{formatearFecha(evento.fecha)}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={14} className="text-[var(--fg-40)] shrink-0" />
-                      <span>{formatearHora(evento.fecha)}</span>
-                    </div>
+                <div className="space-y-3 pt-4 border-t border-[var(--line)] text-sm text-[var(--fg-60)]">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={14} className="text-[var(--fg-40)] shrink-0" />
+                    <span>{formatearFecha(evento.fecha)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock size={14} className="text-[var(--fg-40)] shrink-0" />
+                    <span>{formatearHora(evento.horaInicio)}</span>
+                  </div>
+                  {evento.sede && (
                     <div className="flex items-center gap-2">
                       <MapPin size={14} className="text-[var(--fg-40)] shrink-0" />
-                      <span className="truncate">{evento.ubicacion}</span>
+                      <span className="truncate">{evento.sede.nombre} — {evento.sede.direccion}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <User size={14} className="text-[var(--fg-40)] shrink-0" />
-                      <span className="truncate">{evento.responsable}</span>
-                    </div>
-                  </div>
-
-                  <Link
-                    href={`/eventos/${evento.id}`}
-                    className="mt-5 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[var(--line-strong)] text-sm text-[var(--fg-70)] hover:bg-[var(--inverse-bg)] hover:text-[var(--inverse-fg)] hover:border-[var(--inverse-bg)] transition-all duration-300"
-                  >
-                    Ver detalles
-                    <ArrowRight size={14} />
-                  </Link>
+                  )}
                 </div>
-              );
-            })}
+
+                <Link
+                  href={`/eventos/${evento.id}`}
+                  className="mt-5 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[var(--line-strong)] text-sm text-[var(--fg-70)] hover:bg-[var(--inverse-bg)] hover:text-[var(--inverse-fg)] hover:border-[var(--inverse-bg)] transition-all duration-300"
+                >
+                  Ver detalles
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            ))}
           </div>
         )}
       </div>
