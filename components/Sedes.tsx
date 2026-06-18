@@ -177,18 +177,6 @@ function MapVisualization({ sedes, activeIndex }: { sedes: Sede[]; activeIndex: 
             {points[activeIndex]?.name}
           </p>
         </div>
-        <div className="flex items-end gap-[2px] h-6 text-white/60">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <span
-              key={i}
-              className="sound-bar"
-              style={{
-                height: `${30 + Math.random() * 70}%`,
-                animationDelay: `${i * 0.08}s`,
-              }}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Dots */}

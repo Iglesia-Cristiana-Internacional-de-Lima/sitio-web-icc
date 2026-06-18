@@ -73,18 +73,6 @@ export default function Lideres() {
                   <span className="font-mono text-[10px] tracking-[0.32em] text-white/80 uppercase">
                     0{i + 1}
                   </span>
-                  <div className="flex items-end gap-[2px] h-4 text-white/70">
-                    {Array.from({ length: 8 }).map((_, j) => (
-                      <span
-                        key={j}
-                        className="sound-bar"
-                        style={{
-                          height: `${30 + Math.random() * 70}%`,
-                          animationDelay: `${j * 0.1}s`,
-                        }}
-                      />
-                    ))}
-                  </div>
                 </div>
               </div>
 

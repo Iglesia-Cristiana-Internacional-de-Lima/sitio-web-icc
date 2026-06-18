@@ -5,6 +5,7 @@ import { ArrowRight, Instagram, Youtube, Facebook } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -18,7 +19,7 @@ export default function Footer() {
       const res = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, nombre: nombre || null }),
       });
 
       let data;
@@ -67,7 +68,16 @@ export default function Footer() {
             </p>
 
             {status !== "success" ? (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-4">
+                <input
+                  type="text"
+                  placeholder="Tu nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  disabled={status === "loading"}
+                  className="bg-transparent text-white text-lg py-3 border-b border-white/30 focus:border-white outline-none placeholder:text-white/30 disabled:opacity-50 transition-colors"
+                />
+
                 <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
                   <input
                     type="email"
@@ -76,12 +86,13 @@ export default function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                     disabled={status === "loading"}
-                    className="flex-1 bg-transparent text-white text-lg py-4 outline-none placeholder:text-white/30 disabled:opacity-50"
+
+                    className="flex-1 bg-transparent text-white text-lg py-3 outline-none placeholder:text-white/30 disabled:opacity-50"
                   />
                   <button
                     onClick={handleSubmit}
                     disabled={status === "loading"}
-                    className="p-4 text-white hover:translate-x-1 transition-transform disabled:opacity-50"
+                    className="p-3 text-white hover:translate-x-1 transition-transform disabled:opacity-50"
                     aria-label="Suscribirse"
                   >
                     {status === "loading" ? (
@@ -102,7 +113,7 @@ export default function Footer() {
               >
                 <p className="font-display text-2xl text-white">Listo. Nos vemos pronto.</p>
                 <button 
-                  onClick={() => { setStatus("idle"); setEmail(""); }}
+                  onClick={() => { setStatus("idle"); setEmail(""); setNombre(""); }}
                   className="text-white/50 hover:text-white text-sm mt-2 underline"
                 >
                   Suscribir otro correo
@@ -121,20 +132,6 @@ export default function Footer() {
           {/* Logo */}
           <div className="col-span-2 md:col-span-4">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/40">
-                <div className="flex items-end gap-[2px] h-4 text-white">
-                  {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
-                    <span
-                      key={i}
-                      className="sound-bar"
-                      style={{
-                        height: `${h * 100}%`,
-                        animationDelay: `${i * 0.12}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-[15px] tracking-tight text-white">
                   Iglesia Cristiana

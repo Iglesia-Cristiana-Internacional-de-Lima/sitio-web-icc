@@ -37,7 +37,9 @@ export default function Navbar() {
       <div className="max-w-[1600px] mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <SoundLogo />
+          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/40 backdrop-blur-sm group-hover:border-white/40 transition-colors">
+            <span className="font-display text-sm text-white">IC</span>
+          </div>
           <div className="hidden md:flex flex-col leading-tight">
             <span className="font-display text-[15px] tracking-tight">
               Iglesia Cristiana
@@ -156,21 +158,3 @@ export default function Navbar() {
   );
 }
 
-function SoundLogo() {
-  return (
-    <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/40 backdrop-blur-sm group-hover:border-white/40 transition-colors">
-      <div className="flex items-end gap-[2px] h-4">
-        {[0.4, 0.7, 1, 0.7, 0.4].map((h, i) => (
-          <span
-            key={i}
-            className="sound-bar"
-            style={{
-              height: `${h * 100}%`,
-              animationDelay: `${i * 0.12}s`,
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
