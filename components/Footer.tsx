@@ -6,10 +6,38 @@ import { useState } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
-    if (email.includes("@")) setSubmitted(true);
+  const handleSubmit = async () => {
+    if (!email.includes("@")) return;
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        throw new Error("Ocurrió un error en el servidor. Por favor intenta más tarde.");
+      }
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Ocurrió un error.");
+      }
+
+      setStatus("success");
+      setMessage(data?.message || "Listo. Nos vemos pronto.");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -39,28 +67,28 @@ export default function Footer() {
             </p>
 
             {!submitted ? (
-              <div className="flex items-center border-b border-[var(--line-strong)] focus-within:border-[var(--fg)] transition-colors">
+              <div className="flex items-center border-b border-white/30 focus-within:border-white transition-colors">
                 <input
                   type="email"
                   placeholder="tu@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                  className="flex-1 bg-transparent text-[var(--fg)] text-lg py-4 outline-none placeholder:text-[var(--fg-30)]"
+                  className="flex-1 bg-transparent text-white text-lg py-4 outline-none placeholder:text-white/30"
                 />
                 <button
                   onClick={handleSubmit}
-                  className="p-4 text-[var(--fg)] hover:translate-x-1 transition-transform"
+                  className="p-4 text-white hover:translate-x-1 transition-transform"
                   aria-label="Suscribirse"
                 >
                   <ArrowRight size={20} strokeWidth={1.5} />
                 </button>
               </div>
             ) : (
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-display text-2xl text-[var(--fg)]"
+                className="font-display text-2xl text-white"
               >
                 Listo. Nos vemos pronto.
               </motion.p>

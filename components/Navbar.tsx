@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useSession } from "@/hooks/useSession";
 
 const navItems = [
   { label: "Sedes", href: "/#sedes" },
@@ -15,6 +16,7 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const { user, loading, logout } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { theme, toggle } = useTheme();
@@ -71,12 +73,32 @@ export default function Navbar() {
           >
             {theme === "dark" ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
           </button>
-          <Link
-            href="/login"
-            className="text-[13px] text-[var(--fg-70)] hover:text-[var(--fg)] transition-colors"
-          >
-            Ingresar
-          </Link>
+          {!loading && (
+            user ? (
+              <>
+                <Link
+                  href="/mi-cuenta"
+                  className="inline-flex items-center gap-2 text-[13px] text-[var(--fg-70)] hover:text-[var(--fg)] transition-colors"
+                >
+                  <User size={16} />
+                  {user.nombre.split(" ")[0]}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-[13px] text-[var(--fg-50)] hover:text-[var(--fg)] transition-colors"
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-[13px] text-[var(--fg-70)] hover:text-[var(--fg)] transition-colors"
+              >
+                Ingresar
+              </Link>
+            )
+          )}
           <Link
             href="/#sedes"
             className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--inverse-bg)] text-[var(--inverse-fg)] text-[13px] font-medium hover:opacity-90 transition-all"
@@ -120,13 +142,31 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="h-px bg-[var(--line)] my-2" />
-            <Link
-              href="/login"
-              onClick={() => setOpen(false)}
-              className="text-sm text-[var(--fg-60)]"
-            >
-              Ingresar →
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/mi-cuenta"
+                  onClick={() => setOpen(false)}
+                  className="text-sm text-[var(--fg-60)]"
+                >
+                  Mi cuenta →
+                </Link>
+                <button
+                  onClick={() => { logout(); setOpen(false); }}
+                  className="text-sm text-[var(--fg-40)] text-left"
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="text-sm text-[var(--fg-60)]"
+              >
+                Ingresar →
+              </Link>
+            )}
           </nav>
         </div>
       )}
