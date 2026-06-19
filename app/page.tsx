@@ -14,6 +14,9 @@ import LoginRoles from "@/components/LoginRoles";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
+// 1. IMPORTAMOS TU CHATBOT AQUÍ
+import SmartChatbot from "@/components/SmartChatbot";
+
 export default function Home() {
   return (
     <main className="bg-[#0d0d0d] text-white relative">
@@ -61,6 +64,9 @@ export default function Home() {
 
       {/* WhatsApp Floating Button */}
       <WhatsAppButton />
+
+      {/* 2. AGREGAMOS TU CHATBOT AQUÍ */}
+      <SmartChatbot />
     </main>
   );
 }

@@ -1,5 +1,5 @@
 // Prisma Schema para Iglesia Cristiana Internacional Lima
-// Módulo: Estudios Bíblicos
+// Módulo: Estudios Bíblicos, Eventos y Suscriptores
 
 generator client {
   provider = "prisma-client-js"
@@ -9,49 +9,75 @@ datasource db {
   provider = "postgresql"
 }
 
-// Modelo de Líder de Estudios Bíblicos
+// ==========================================
+// MÓDULO DE LÍDERES Y RESERVAS (Lo que ya tenías)
+// ==========================================
+
 model Lider {
-  id            Int       @id @default(autoincrement())
-  nombre        String
-  rol           String
+  id             Int       @id @default(autoincrement())
+  nombre         String
+  rol            String
   especialidades String[]
   disponibilidad String
-  ubicacion     String
-  imagen        String?
-  bio           String?
-  activo        Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  ubicacion      String
+  imagen         String?
+  bio            String?
+  activo         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  // Relación con reservas
-  reservas      Reserva[]
+  reservas       Reserva[]
 
   @@map("lideres")
 }
 
-// Modelo de Reserva de Estudio Bíblico
 model Reserva {
-  id            Int       @id @default(autoincrement())
-  nombre        String
-  contacto      String
-  modalidad     Modalidad
-  mensaje       String?
-  estado        EstadoReserva @default(PENDIENTE)
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  contacto     String
+  modalidad    Modalidad
+  mensaje      String?
+  estado       EstadoReserva @default(PENDIENTE)
 
-  // Relación con líder
-  liderId       Int
-  lider         Lider     @relation(fields: [liderId], references: [id])
+  liderId      Int
+  lider        Lider         @relation(fields: [liderId], references: [id])
 
-  // Notificaciones
-  emailEnviado  Boolean   @default(false)
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  emailEnviado Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@map("reservas")
 }
 
-// Enums
+// ==========================================
+// MÓDULO DE EVENTOS Y SUSCRIPTORES (Las tablas recuperadas)
+// ==========================================
+
+model Evento {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+  fecha       DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("eventos")
+}
+
+model Suscriptor {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  nombre    String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("suscriptores")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
 enum Modalidad {
   PRESENCIAL
   ONLINE

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import SmartChatbot from "@/components/SmartChatbot";
 
 const display = Fraunces({
   subsets: ["latin"],
