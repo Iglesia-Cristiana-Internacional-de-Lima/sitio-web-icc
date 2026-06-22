@@ -4,50 +4,49 @@ import { motion } from "framer-motion";
 import { ArrowRight, Instagram } from "lucide-react";
 import ReelGrid from "@/components/ReelGrid";
 
-// Placeholder reels from Mercy activities
 const mercyReels = [
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY001/",
-    caption: "Entrega de víveres - Villa El Salvador",
+    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
+    caption: "Servicio Dominical y Bautismo de Amalia",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY002/",
-    caption: "Campaña médica en Comas",
+    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
+    caption: "Pedida de enamoramiento | Freddy & Carla",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY003/",
-    caption: "Pintado de escuela",
+    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
+    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY004/",
-    caption: "Almuerzo comunitario Navidad 2025",
+    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
+    caption: "Entresemanal - Comunidad que celebra juntos",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY005/",
-    caption: "Voluntarios en acción",
+    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
+    caption: "Entresemanal de Hombres",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/MERCY006/",
-    caption: "Taller de refuerzo escolar",
+    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
+    caption: "Staff de Líderes",
   },
 ];
 
 export default function MercyReels() {
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             03 — En acción
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -58,15 +57,15 @@ export default function MercyReels() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,6vw,5rem)] text-white leading-tight"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Así servimos
               <br />
-              <em className="italic font-light text-white/70">juntos.</em>
+              <em className="italic font-light text-[var(--fg-70)]">juntos.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8 flex flex-col justify-between">
-            <p className="text-white/60 text-lg leading-relaxed mb-6">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed mb-6">
               Momentos reales de nuestras actividades. No solo hablamos de
               servir, lo hacemos.
             </p>
@@ -75,7 +74,7 @@ export default function MercyReels() {
                 href="https://instagram.com/mercyworldwide"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-white transition-colors group"
+                className="inline-flex items-center gap-2 text-[var(--fg-60)] text-sm hover:text-[var(--fg)] transition-colors group"
               >
                 <Instagram size={16} strokeWidth={1.5} />
                 @mercyworldwide
@@ -86,13 +85,13 @@ export default function MercyReels() {
                 />
               </a>
               <a
-                href="https://instagram.com/iglesiacristianalima"
+                href="https://instagram.com/limaicc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-white transition-colors group"
+                className="inline-flex items-center gap-2 text-[var(--fg-60)] text-sm hover:text-[var(--fg)] transition-colors group"
               >
                 <Instagram size={16} strokeWidth={1.5} />
-                @iglesiacristianalima
+                @limaicc
                 <ArrowRight
                   size={14}
                   strokeWidth={1.5}

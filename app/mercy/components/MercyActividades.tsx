@@ -62,15 +62,15 @@ export default function MercyActividades() {
   return (
     <section
       id="actividades"
-      className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5"
+      className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]"
     >
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             02 — Próximas actividades
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -81,15 +81,15 @@ export default function MercyActividades() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="font-display text-[clamp(2.5rem,6vw,5rem)] text-white leading-tight"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
             >
               Sé parte del
               <br />
-              <em className="italic font-light text-white/70">cambio.</em>
+              <em className="italic font-light text-[var(--fg-70)]">cambio.</em>
             </motion.h2>
           </div>
           <div className="lg:col-span-5 lg:pt-8">
-            <p className="text-white/60 text-lg leading-relaxed">
+            <p className="text-[var(--fg-60)] text-lg leading-relaxed">
               Cada actividad necesita voluntarios como tú. No necesitas
               experiencia, solo ganas de servir.
             </p>
@@ -105,11 +105,11 @@ export default function MercyActividades() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className={`group p-6 md:p-8 rounded-xl border transition-all ${
-                act.featured
-                  ? "bg-white/5 border-white/20 hover:border-white/40"
-                  : "bg-[#191919] border-white/10 hover:border-white/20"
-              }`}
+               className={`group p-6 md:p-8 rounded-xl border transition-all ${
+                 act.featured
+                   ? "bg-[var(--surface-5)] border-[var(--line-strong)] hover:border-[var(--fg-40)]"
+                   : "bg-[var(--surface)] border-[var(--line)] hover:border-[var(--line-strong)]"
+               }`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center gap-6">
                 {/* Status tag */}
@@ -117,8 +117,8 @@ export default function MercyActividades() {
                   <span
                     className={`inline-block px-3 py-1 rounded-full font-mono text-[10px] tracking-[0.2em] uppercase ${
                       act.spotsLeft <= 5
-                        ? "bg-white text-black"
-                        : "bg-white/10 text-white/70"
+                        ? "bg-[var(--inverse-bg)] text-[var(--inverse-fg)]"
+                        : "bg-[var(--surface-10)] text-[var(--fg-70)]"
                     }`}
                   >
                     {act.spotsLeft <= 5
@@ -131,36 +131,36 @@ export default function MercyActividades() {
 
                 {/* Main content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-2xl md:text-3xl text-white mb-2 group-hover:italic transition-all">
+                  <h3 className="font-display text-2xl md:text-3xl text-[var(--fg)] mb-2 group-hover:italic transition-all">
                     {act.title}
                   </h3>
-                  <p className="text-white/50 text-sm line-clamp-1">
+                  <p className="text-[var(--fg-50)] text-sm line-clamp-1">
                     {act.description}
                   </p>
                 </div>
 
                 {/* Details */}
-                <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-white/50 text-sm shrink-0">
+                <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-[var(--fg-50)] text-sm shrink-0">
                   <span className="inline-flex items-center gap-1.5">
-                    <Calendar size={14} strokeWidth={1.5} className="text-white/30" />
+                    <Calendar size={14} strokeWidth={1.5} className="text-[var(--fg-30)]" />
                     {act.date}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <Clock size={14} strokeWidth={1.5} className="text-white/30" />
+                    <Clock size={14} strokeWidth={1.5} className="text-[var(--fg-30)]" />
                     {act.time}
                   </span>
                   <span className="hidden md:inline-flex items-center gap-1.5">
-                    <MapPin size={14} strokeWidth={1.5} className="text-white/30" />
+                    <MapPin size={14} strokeWidth={1.5} className="text-[var(--fg-30)]" />
                     {act.location}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <Users size={14} strokeWidth={1.5} className="text-white/30" />
+                    <Users size={14} strokeWidth={1.5} className="text-[var(--fg-30)]" />
                     {act.volunteers} voluntarios
                   </span>
                 </div>
 
                 {/* CTA */}
-                <button className="shrink-0 px-5 py-2.5 rounded-full border border-white/20 text-white/70 text-sm font-medium group-hover:bg-white group-hover:text-black group-hover:border-white transition-all flex items-center gap-2">
+                <button className="shrink-0 px-5 py-2.5 rounded-full border border-[var(--line-strong)] text-[var(--fg-70)] text-sm font-medium group-hover:bg-[var(--inverse-bg)] group-hover:text-[var(--inverse-fg)] group-hover:border-[var(--inverse-bg)] transition-all flex items-center gap-2">
                   Inscribirme
                   <ArrowRight size={14} strokeWidth={1.5} />
                 </button>
@@ -170,9 +170,9 @@ export default function MercyActividades() {
         </div>
 
         {/* Help text */}
-        <div className="mt-12 p-6 bg-[#191919] border border-white/10 rounded-xl">
-          <p className="text-white/50 text-sm leading-relaxed">
-            <span className="text-white font-medium">Primera vez?</span> No te
+        <div className="mt-12 p-6 bg-[var(--surface)] border border-[var(--line)] rounded-xl">
+          <p className="text-[var(--fg-50)] text-sm leading-relaxed">
+            <span className="text-[var(--fg)] font-medium">Primera vez?</span> No te
             preocupes. Te enviamos toda la información necesaria al inscribirte:
             qué llevar, cómo llegar y qué esperar. Siempre hay alguien del
             equipo para guiarte.

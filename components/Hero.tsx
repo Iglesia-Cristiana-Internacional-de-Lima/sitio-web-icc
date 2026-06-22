@@ -7,19 +7,8 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="relative w-full h-screen min-h-[720px] overflow-hidden bg-black">
-      {/* Background video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source
-          src="https://res.cloudinary.com/dfonotyfb/video/upload/v1775585556/dds3_1_rqhg7x.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-800 z-0" />
 
       {/* Gradient overlays for legibility */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />

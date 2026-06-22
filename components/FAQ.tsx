@@ -35,13 +35,13 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             07 — Preguntas
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -51,17 +51,17 @@ export default function FAQ() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="display-heading text-white text-[clamp(2.5rem,5vw,4.5rem)] sticky top-32"
+              className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)] sticky top-32"
             >
               Lo que
               <br />
-              <em className="italic font-light text-white/70">
+              <em className="italic font-light text-[var(--fg-70)]">
                 normalmente nos preguntan.
               </em>
             </motion.h2>
           </div>
 
-          <div className="lg:col-span-7 divide-y divide-white/10 border-y border-white/10">
+          <div className="lg:col-span-7 divide-y divide-[var(--line)] border-y border-[var(--line)]">
             {faqs.map((f, i) => (
               <motion.div
                 key={i}
@@ -75,14 +75,14 @@ export default function FAQ() {
                   className="w-full text-left py-7 flex items-center justify-between gap-6 group"
                 >
                   <span className="flex items-center gap-6 flex-1">
-                    <span className="font-mono text-[11px] tracking-[0.28em] text-white/40">
+                    <span className="font-mono text-[11px] tracking-[0.28em] text-[var(--fg-40)]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="font-display text-xl md:text-2xl text-white group-hover:italic transition-all">
+                    <span className="font-display text-xl md:text-2xl text-[var(--fg)] group-hover:italic transition-all">
                       {f.q}
                     </span>
                   </span>
-                  <span className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white shrink-0 group-hover:border-white/50 transition-colors">
+                  <span className="w-10 h-10 rounded-full border border-[var(--line-strong)] flex items-center justify-center text-[var(--fg)] shrink-0 group-hover:border-[var(--line-strong)] transition-colors">
                     {open === i ? (
                       <Minus size={16} strokeWidth={1.5} />
                     ) : (
@@ -99,7 +99,7 @@ export default function FAQ() {
                       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      <p className="text-white/60 text-base leading-relaxed pb-7 pl-[60px] pr-12 max-w-2xl">
+                      <p className="text-[var(--fg-60)] text-base leading-relaxed pb-7 pl-[60px] pr-12 max-w-2xl">
                         {f.a}
                       </p>
                     </motion.div>

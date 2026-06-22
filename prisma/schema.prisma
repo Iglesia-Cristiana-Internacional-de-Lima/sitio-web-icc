@@ -1,6 +1,3 @@
-// Prisma Schema para Iglesia Cristiana Internacional Lima
-// Módulo: Estudios Bíblicos, Eventos y Suscriptores
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,74 +6,86 @@ datasource db {
   provider = "postgresql"
 }
 
-// ==========================================
-// MÓDULO DE LÍDERES Y RESERVAS (Lo que ya tenías)
-// ==========================================
+model Rol {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique
+  descripcion String?
+  activo      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-model Lider {
-  id             Int       @id @default(autoincrement())
+  usuarios    Usuario[]
+
+  @@map("roles")
+}
+
+model Usuario {
+  id             Int         @id @default(autoincrement())
+  email          String      @unique
+  passwordHash   String?
   nombre         String
-  rol            String
+
+  rolId          Int
+  rol            Rol         @relation(fields: [rolId], references: [id])
+
+  // campos para líderes
+  titulo         String?
   especialidades String[]
-  disponibilidad String
-  ubicacion      String
+  disponibilidad String?
+  ubicacion      String?
   imagen         String?
   bio            String?
-  activo         Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
 
-  reservas       Reserva[]
+  // seguimiento (PB-033)
+  estadoSeguimiento   EstadoSeguimiento?
+  liderAsignadoId     Int?
+  liderAsignado       Usuario?   @relation("seguimiento", fields: [liderAsignadoId], references: [id])
+  asignados           Usuario[]  @relation("seguimiento")
+  origen              String?
+  notasSeguimiento    String?
 
-  @@map("lideres")
+  activo         Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  reservasComoLider   Reserva[] @relation("lider")
+  reservasComoUsuario Reserva[] @relation("solicitante")
+
+  @@map("usuarios")
+}
+
+enum EstadoSeguimiento {
+  NUEVO
+  CONTACTADO
+  EN_PROCESO
+  CONVERTIDO
+  DESCARTADO
 }
 
 model Reserva {
-  id           Int           @id @default(autoincrement())
-  nombre       String
-  contacto     String
-  modalidad    Modalidad
-  mensaje      String?
-  estado       EstadoReserva @default(PENDIENTE)
+  id            Int           @id @default(autoincrement())
+  modalidad     Modalidad
+  mensaje       String?
+  estado        EstadoReserva @default(PENDIENTE)
 
-  liderId      Int
-  lider        Lider         @relation(fields: [liderId], references: [id])
+  // líder asignado
+  liderId       Int
+  lider         Usuario       @relation("lider", fields: [liderId], references: [id])
 
-  emailEnviado Boolean       @default(false)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  // usuario que reserva (null = reserva anónima legacy)
+  solicitanteId Int?
+  solicitante   Usuario?      @relation("solicitante", fields: [solicitanteId], references: [id])
+
+  // campos legacy para reservas sin usuario registrado
+  nombreLegacy   String?      @map("nombre")
+  contactoLegacy String?      @map("contacto")
+
+  emailEnviado  Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@map("reservas")
 }
-
-// ==========================================
-// MÓDULO DE EVENTOS Y SUSCRIPTORES (Las tablas recuperadas)
-// ==========================================
-
-model Evento {
-  id          Int      @id @default(autoincrement())
-  titulo      String
-  descripcion String?
-  fecha       DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("eventos")
-}
-
-model Suscriptor {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  nombre    String?
-  activo    Boolean  @default(true)
-  createdAt DateTime @default(now())
-
-  @@map("suscriptores")
-}
-
-// ==========================================
-// ENUMS
-// ==========================================
 
 enum Modalidad {
   PRESENCIAL
@@ -88,4 +97,91 @@ enum EstadoReserva {
   CONFIRMADA
   COMPLETADA
   CANCELADA
+}
+
+// PB-029: Sedes
+model Sede {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  direccion   String
+  distrito    String?
+  lat         Float?
+  lng         Float?
+  telefono    String?
+  horario     String?
+  imagen      String?
+  activo      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  eventos     Evento[]
+
+  @@map("sedes")
+}
+
+// PB-028: Eventos
+model Evento {
+  id          Int       @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+  fecha       DateTime
+  horaInicio  String
+  horaFin     String?
+  sedeId      Int?
+  sede        Sede?     @relation(fields: [sedeId], references: [id])
+  imagen      String?
+  destacado   Boolean   @default(false)
+  activo      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("eventos")
+}
+
+// PB-032: Ministerios
+model Ministerio {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  slug        String    @unique
+  descripcion String?
+  imagen      String?
+  icono       String?
+  orden       Int       @default(0)
+  activo      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("ministerios")
+}
+
+// PB-031: Campañas de Email
+model CampanaEmail {
+  id          Int            @id @default(autoincrement())
+  asunto      String
+  contenido   String
+  enviados    Int            @default(0)
+  abiertos    Int            @default(0)
+  fechaEnvio  DateTime?
+  estado      EstadoCampana  @default(BORRADOR)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("campanas_email")
+}
+
+enum EstadoCampana {
+  BORRADOR
+  PROGRAMADA
+  ENVIANDO
+  ENVIADA
+}
+
+// Newsletter - suscriptores independientes del sistema de usuarios
+model suscriptores {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  nombre    String?
+  estado    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

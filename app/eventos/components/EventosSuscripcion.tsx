@@ -44,7 +44,7 @@ export default function EventosSuscripcion() {
                 Suscripciones
               </span>
 
-              <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] text-white leading-tight mt-6">
+              <h2 className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)] mt-6">
                 No te pierdas
                 <br />
                 <em className="italic font-light text-white/70">nada.</em>

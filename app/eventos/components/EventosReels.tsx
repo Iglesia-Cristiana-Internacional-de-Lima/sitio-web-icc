@@ -3,37 +3,36 @@
 import { motion } from "framer-motion";
 import ReelGrid from "@/components/ReelGrid";
 
-// Placeholder reels from past events
 const eventReels = [
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVT001/",
-    caption: "Servicio dominical - Sede Miraflores",
+    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
+    caption: "Servicio Dominical - Hotel Grand Nobility",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVT002/",
-    caption: "Bautismos Febrero 2026",
-  },
-  {
-    platform: "tiktok" as const,
-    url: "https://www.tiktok.com/@iglesiacristianalima/video/001",
-    caption: "Retiro de jóvenes Chosica",
+    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
+    caption: "Pedida de enamoramiento | Freddy & Carla",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVT003/",
-    caption: "Devocional universitario PUCP",
+    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
+    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVT004/",
-    caption: "Reunión de profesionales",
+    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
+    caption: "Entresemanal - Miércoles de comunidad",
   },
   {
     platform: "instagram" as const,
-    url: "https://www.instagram.com/reel/EVT005/",
-    caption: "Charla bíblica San Isidro",
+    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
+    caption: "Entresemanal de Hombres",
+  },
+  {
+    platform: "instagram" as const,
+    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
+    caption: "Staff de Líderes",
   },
 ];
 
@@ -56,7 +55,7 @@ export default function EventosReels() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="font-display text-[clamp(2.5rem,6vw,5rem)] text-white leading-tight"
+            className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
           >
             Los últimos
             <br />

@@ -49,14 +49,14 @@ export default function EventosDestacados() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
-    <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
+    <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)]">
       <div className="max-w-[1600px] mx-auto">
         {/* Section label */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="font-mono text-[11px] tracking-[0.32em] text-white/50 uppercase">
+          <span className="font-mono text-[11px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
             02 — Eventos destacados
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[var(--line)]" />
         </div>
 
         {/* Headline */}
@@ -66,10 +66,10 @@ export default function EventosDestacados() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="display-heading text-white text-[clamp(2.5rem,6vw,5.5rem)]"
+            className="display-heading text-[var(--fg)] text-[clamp(2.5rem,6vw,5.5rem)]"
           >
             Encuentra tu
-            <em className="italic font-light text-white/70"> momento.</em>
+            <em className="italic font-light text-[var(--fg-70)]"> momento.</em>
           </motion.h2>
         </div>
 
@@ -85,16 +85,16 @@ export default function EventosDestacados() {
           >
             {/* Category label */}
             <div className="flex items-center gap-3 mb-8">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-                <Users size={14} strokeWidth={1.5} className="text-white/60" />
-                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/60">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-5)] border border-[var(--line)]">
+                <Users size={14} strokeWidth={1.5} className="text-[var(--fg-60)]" />
+                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--fg-60)]">
                   Para ti si... ya eres parte de la familia
                 </span>
               </span>
             </div>
 
             {/* Event cards */}
-            <div className="space-y-px bg-white/5">
+            <div className="space-y-px bg-[var(--line)]">
               {eventosConsolidados.map((evento, i) => (
                 <motion.div
                   key={evento.title}
@@ -104,22 +104,22 @@ export default function EventosDestacados() {
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                   onMouseEnter={() => setHoveredCard(evento.title)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  className={`bg-[#0d0d0d] p-6 md:p-8 transition-colors duration-500 cursor-pointer ${
-                    hoveredCard === evento.title ? "bg-[#191919]" : ""
+                  className={`bg-[var(--bg)] p-6 md:p-8 transition-colors duration-500 cursor-pointer ${
+                    hoveredCard === evento.title ? "bg-[var(--surface)]" : ""
                   }`}
                 >
                   <div className="flex items-start gap-6">
-                    <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                      <evento.icon size={20} strokeWidth={1.5} className="text-white/60" />
+                    <div className="w-12 h-12 rounded-full bg-[var(--surface-5)] flex items-center justify-center shrink-0">
+                      <evento.icon size={20} strokeWidth={1.5} className="text-[var(--fg-60)]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-display text-2xl text-white mb-2">
+                      <h3 className="font-display text-2xl text-[var(--fg)] mb-2">
                         {evento.title}
                       </h3>
-                      <p className="text-white/50 text-sm mb-4 line-clamp-2">
+                      <p className="text-[var(--fg-50)] text-sm mb-4 line-clamp-2">
                         {evento.description}
                       </p>
-                      <div className="flex flex-wrap items-center gap-4 text-white/40">
+                      <div className="flex flex-wrap items-center gap-4 text-[var(--fg-40)]">
                         <span className="inline-flex items-center gap-1.5 text-xs">
                           <Calendar size={12} strokeWidth={1.5} />
                           {evento.day}
@@ -141,7 +141,7 @@ export default function EventosDestacados() {
 
             <Link
               href="/eventos"
-              className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-white transition-colors group mt-4"
+              className="inline-flex items-center gap-2 text-[var(--fg-60)] text-sm hover:text-[var(--fg)] transition-colors group mt-4"
             >
               Ver todos los eventos
               <ArrowRight size={14} strokeWidth={1.5} className="group-hover:translate-x-1 transition-transform" />
@@ -158,9 +158,9 @@ export default function EventosDestacados() {
           >
             {/* Category label */}
             <div className="flex items-center gap-3 mb-8">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-                <BookOpen size={14} strokeWidth={1.5} className="text-white/60" />
-                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/60">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-5)] border border-[var(--line)]">
+                <BookOpen size={14} strokeWidth={1.5} className="text-[var(--fg-60)]" />
+                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--fg-60)]">
                   Para ti si... es tu primera vez
                 </span>
               </span>
@@ -174,25 +174,25 @@ export default function EventosDestacados() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 p-8 md:p-12"
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--surface-10)] to-[var(--surface-5)] border border-[var(--line)] p-8 md:p-12"
               >
                 {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--surface-5)] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
                 <div className="relative">
-                  <span className="font-mono text-[10px] tracking-[0.32em] text-white/50 uppercase">
+                  <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--fg-50)] uppercase">
                     Evento personal
                   </span>
 
-                  <h3 className="font-display text-4xl md:text-5xl text-white mt-4 mb-4">
+                  <h3 className="font-display text-4xl md:text-5xl text-[var(--fg)] mt-4 mb-4">
                     {evento.title}
                   </h3>
 
-                  <p className="text-white/60 text-lg leading-relaxed mb-8 max-w-md">
+                  <p className="text-[var(--fg-60)] text-lg leading-relaxed mb-8 max-w-md">
                     {evento.description}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-6 mb-10 text-white/50">
+                  <div className="flex flex-wrap items-center gap-6 mb-10 text-[var(--fg-50)]">
                     <span className="inline-flex items-center gap-2 text-sm">
                       <Calendar size={16} strokeWidth={1.5} />
                       {evento.day}
@@ -209,7 +209,7 @@ export default function EventosDestacados() {
 
                   <Link
                     href={evento.href}
-                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all"
+                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--inverse-bg)] text-[var(--inverse-fg)] text-sm font-medium hover:opacity-90 transition-all"
                   >
                     {evento.cta}
                     <ArrowRight
@@ -223,9 +223,9 @@ export default function EventosDestacados() {
             ))}
 
             {/* Secondary info card */}
-            <div className="bg-[#191919] border border-white/10 rounded-xl p-6">
-              <p className="text-white/50 text-sm leading-relaxed">
-                <span className="text-white font-medium">No sabes por dónde empezar?</span>
+            <div className="bg-[var(--surface)] border border-[var(--line)] rounded-xl p-6">
+              <p className="text-[var(--fg-50)] text-sm leading-relaxed">
+                <span className="text-[var(--fg)] font-medium">No sabes por dónde empezar?</span>
                 {" "}Las charlas bíblicas son perfectas para conocernos. Sin libreto,
                 sin presión. Solo una conversación honesta sobre la vida y la fe.
               </p>

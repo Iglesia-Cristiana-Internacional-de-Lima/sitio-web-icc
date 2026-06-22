@@ -1,10 +1,11 @@
 // Tipos para el módulo de Estudios Bíblicos
 
-// Líder con campos en español (desde API/DB)
+// Líder desde API (Usuario con rol=LIDER)
 export interface LiderAPI {
   id: number;
   nombre: string;
-  rol: string;
+  rol: string;      // mapped from titulo
+  titulo?: string;
   especialidades: string[];
   disponibilidad: string;
   ubicacion: string;

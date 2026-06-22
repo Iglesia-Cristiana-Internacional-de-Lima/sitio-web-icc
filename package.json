@@ -19,10 +19,12 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@react-email/components": "^1.0.12",
     "framer-motion": "^11.11.0",
     "lucide-react": "^0.460.0",
     "next": "^16.0.0",
     "pg": "^8.21.0",
+    "playwright": "^1.61.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^6.12.4"
