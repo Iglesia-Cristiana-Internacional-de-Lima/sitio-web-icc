@@ -14,26 +14,34 @@ const areas = [
     title: "Alimentación",
     description:
       "Entrega de víveres y almuerzos comunitarios en zonas vulnerables de Lima.",
-    img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80",
+    img: "/images/mercy/mercy-foto-1.jpg",
   },
   {
     title: "Educación",
     description:
       "Apoyo escolar, útiles y becas para niños y jóvenes de escasos recursos.",
-    img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80",
+    img: "/images/mercy/mercy-foto-2.jpg",
   },
   {
     title: "Salud",
     description:
       "Campañas médicas, donación de medicinas y acompañamiento a enfermos.",
-    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80",
+    img: "/images/mercy/mercy-foto-3.jpg",
   },
   {
     title: "Comunidad",
     description:
       "Limpieza de espacios públicos, pintado de escuelas y embellecimiento urbano.",
-    img: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&q=80",
+    img: "/images/mercy/mercy-foto-4.jpg",
   },
+];
+
+const galleryImages = [
+  "/images/mercy/mercy-foto-5.jpg",
+  "/images/mercy/mercy-foto-6.jpg",
+  "/images/mercy/mercy-foto-7.jpg",
+  "/images/mercy/mercy-foto-8.jpg",
+  "/images/mercy/mercy-foto-9.jpg",
 ];
 
 export default function MercyImpacto() {
@@ -136,6 +144,26 @@ export default function MercyImpacto() {
               </motion.div>
             ))}
           </div>
+        </div>
+
+        {/* Gallery */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-16">
+          {galleryImages.map((src, i) => (
+            <motion.div
+              key={src}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              className="relative aspect-[16/9] overflow-hidden rounded-xl"
+            >
+              <img
+                src={src}
+                alt={`Mercy actividad ${i + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

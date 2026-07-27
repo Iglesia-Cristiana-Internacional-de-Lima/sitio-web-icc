@@ -169,12 +169,23 @@ export default function Footer() {
           <FooterColumn
             title="Contacto"
             links={[
-              { label: "WhatsApp", href: "#" },
+              { label: "WhatsApp", href: "https://wa.me/51999999999" },
               { label: "Email", href: "mailto:hola@iglesiacristianalima.pe" },
-              { label: "Pedir oración", href: "#" },
+              { label: "Pedir oración", href: "https://wa.me/51999999999?text=Quiero%20pedir%20oración" },
               { label: "Visítanos", href: "#sedes" },
             ]}
           />
+
+          {/* Info extra */}
+          <div className="md:col-span-2">
+            <h4 className="font-mono text-[10px] tracking-[0.32em] text-[var(--fg-40)] uppercase mb-5">
+              Horarios
+            </h4>
+            <ul className="space-y-3 text-[var(--fg-80)] text-sm">
+              <li>Domingos · 10:00 AM</li>
+              <li>Entresemanal · Miércoles 7:30 PM</li>
+            </ul>
+          </div>
         </div>
 
         {/* Bottom bar */}
@@ -187,21 +198,27 @@ export default function Footer() {
 
           <div className="flex items-center gap-5 text-[var(--fg-50)]">
             <a
-              href="#"
+              href="https://instagram.com/limaicc"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-[var(--fg)] transition-colors"
               aria-label="Instagram"
             >
               <Instagram size={18} strokeWidth={1.5} />
             </a>
             <a
-              href="#"
+              href="https://youtube.com/@iglesiacristianalima"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-[var(--fg)] transition-colors"
               aria-label="YouTube"
             >
               <Youtube size={18} strokeWidth={1.5} />
             </a>
             <a
-              href="#"
+              href="https://facebook.com/iglesiacristianalima"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-[var(--fg)] transition-colors"
               aria-label="Facebook"
             >
@@ -217,13 +234,6 @@ export default function Footer() {
               Términos
             </a>
           </div>
-        </div>
-
-        {/* Massive watermark */}
-        <div className="mt-20 -mx-6 md:-mx-10 overflow-hidden">
-          <p className="font-display text-[clamp(4rem,18vw,18rem)] leading-[0.85] text-[var(--fg-10)] whitespace-nowrap text-center select-none">
-            <em className="italic font-light">Lima · Perú · 2026</em>
-          </p>
         </div>
       </div>
     </footer>

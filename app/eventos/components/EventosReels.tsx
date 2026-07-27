@@ -1,42 +1,20 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReelGrid from "@/components/ReelGrid";
 
-const eventReels = [
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
-    caption: "Servicio Dominical - Hotel Grand Nobility",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
-    caption: "Pedida de enamoramiento | Freddy & Carla",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
-    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
-    caption: "Entresemanal - Miércoles de comunidad",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
-    caption: "Entresemanal de Hombres",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
-    caption: "Staff de Líderes",
-  },
-];
-
 export default function EventosReels() {
+  const [reels, setReels] = useState<{ platform: "instagram" | "tiktok"; url: string; caption?: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/public/reels?seccion=eventos")
+      .then((r) => r.json())
+      .then((json) => { if (json.success && json.data.length > 0) setReels(json.data); });
+  }, []);
+
+  if (reels.length === 0) return null;
+
   return (
     <section className="relative bg-[#0d0d0d] py-32 md:py-40 px-6 md:px-10 border-t border-white/5">
       <div className="max-w-[1600px] mx-auto">
@@ -67,7 +45,7 @@ export default function EventosReels() {
         </div>
 
         {/* Reel carousel */}
-        <ReelGrid reels={eventReels} layout="carousel" />
+        <ReelGrid reels={reels} layout="carousel" />
       </div>
     </section>
   );

@@ -36,7 +36,7 @@ const sedesIniciales = [
 ];
 
 const ministeriosIniciales = [
-  { nombre: "Universitarios", slug: "universitarios", descripcion: "Para los que están descubriendo todo. Reuniones en campus y sedes.", icono: "18 — 24", imagen: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80", orden: 1 },
+  { nombre: "Universitarios", slug: "universitarios", descripcion: "Para los que están descubriendo todo. Reuniones en campus y sedes.", icono: "18 — 24", imagen: "/images/evolution-lima/ev-foto-1.jpg", orden: 1 },
   { nombre: "Profesionales", slug: "profesionales", descripcion: "Vida real, presión real, fe real. Networking con propósito.", icono: "25 — 35", imagen: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80", orden: 2 },
   { nombre: "Casados", slug: "casados", descripcion: "Construir un matrimonio que dure. Sin frases hechas.", icono: "Matrimonios", imagen: "https://images.unsplash.com/photo-1529539795054-3c162aab037a?w=800&q=80", orden: 3 },
 ];

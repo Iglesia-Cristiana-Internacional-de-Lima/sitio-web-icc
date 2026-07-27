@@ -16,6 +16,12 @@ const team = [
     img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
   },
   {
+    name: "Waldir Caro",
+    role: "Líder",
+    area: "Liderazgo",
+    img: "/images/team/waldir-caro.jpg",
+  },
+  {
     name: "Carlos Salazar",
     role: "Coordinador de Sedes",
     area: "Operaciones",
@@ -44,12 +50,6 @@ const team = [
     role: "Líder de Mercy",
     area: "Servicio Social",
     img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80",
-  },
-  {
-    name: "Elena Rodríguez",
-    role: "Administradora General",
-    area: "Administración",
-    img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80",
   },
 ];
 

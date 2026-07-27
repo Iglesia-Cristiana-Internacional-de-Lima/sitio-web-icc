@@ -15,6 +15,7 @@ export default function EvolutionHero() {
           muted
           loop
           playsInline
+          suppressHydrationWarning
           className="w-full h-full object-cover"
         >
           <source src="/videos/evolution-lima-hero.mp4" type="video/mp4" />

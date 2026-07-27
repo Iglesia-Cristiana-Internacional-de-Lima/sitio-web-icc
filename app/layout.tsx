@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   title: "Iglesia Cristiana Internacional de Lima",
   description:
     "Una familia. Muchas sedes. Encuentra tu lugar, conecta con Dios, vive en comunidad.",
+  icons: {
+    icon: "/images/iconito-iglesia.jpg",
+    apple: "/images/iconito-iglesia.jpg",
+  },
   openGraph: {
     title: "Iglesia Cristiana Internacional de Lima",
     description:

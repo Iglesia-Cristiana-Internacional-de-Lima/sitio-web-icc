@@ -13,7 +13,7 @@ export default function EvolutionIcon({
 }: EvolutionIconProps) {
   return (
     <Image
-      src="/images/evolution-lima.jpg"
+      src="/images/evolution-lima/evolution-lima.jpg"
       alt="Evolution Lima"
       width={size}
       height={size}

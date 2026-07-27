@@ -1,43 +1,21 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Instagram } from "lucide-react";
 import ReelGrid from "./ReelGrid";
 
-const communityReels = [
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DZP9tQ0jofn/",
-    caption: "Pedida de enamoramiento | Freddy & Carla",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DZBtwiKNh7U/",
-    caption: "7 años de la Iglesia Cristiana Internacional de Lima",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DXM8MrRGMDy/?img_index=1",
-    caption: "Entresemanal - Cumpleaños de Waldir",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWxRitgkaNf/?img_index=1",
-    caption: "Servicio Dominical y Bautismo de Amalia",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWbvcA-jlAw/?img_index=1",
-    caption: "Entresemanal de Hombres",
-  },
-  {
-    platform: "instagram" as const,
-    url: "https://www.instagram.com/p/DWRey4IjsLS/?img_index=1",
-    caption: "Staff de Líderes - Estudio bíblico",
-  },
-];
-
 export default function CommunityReels() {
+  const [reels, setReels] = useState<{ platform: "instagram" | "tiktok"; url: string; caption?: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/public/reels?seccion=comunidad")
+      .then((r) => r.json())
+      .then((json) => { if (json.success && json.data.length > 0) setReels(json.data); });
+  }, []);
+
+  if (reels.length === 0) return null;
+
   return (
     <section className="relative bg-[var(--bg)] py-32 md:py-40 px-6 md:px-10 border-t border-[var(--line)] overflow-hidden">
       <div className="max-w-[1600px] mx-auto">
@@ -89,7 +67,7 @@ export default function CommunityReels() {
         </div>
 
         {/* Reel carousel */}
-        <ReelGrid reels={communityReels} layout="carousel" />
+        <ReelGrid reels={reels} layout="carousel" />
       </div>
     </section>
   );

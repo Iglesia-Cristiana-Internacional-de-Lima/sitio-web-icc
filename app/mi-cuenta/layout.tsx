@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Home, Calendar, User, LogOut, ChevronLeft, Users, Shield, BookOpen, Book, MapPin, Heart } from "lucide-react";
+import { Home, Calendar, User, LogOut, ChevronLeft, Users, Shield, BookOpen, Book, MapPin, Heart, Film } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
 
 const menuItems = [
@@ -23,6 +23,7 @@ const adminItems = [
   { label: "Sedes", href: "/mi-cuenta/admin/sedes", icon: MapPin },
   { label: "Ministerios", href: "/mi-cuenta/admin/ministerios", icon: Heart },
   { label: "Eventos", href: "/mi-cuenta/admin/eventos", icon: Calendar },
+  { label: "Reels", href: "/mi-cuenta/admin/reels", icon: Film },
 ];
 
 export default function MiCuentaLayout({

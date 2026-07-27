@@ -24,25 +24,7 @@ type ReelGridProps = {
   variant?: "default" | "evolution";
 };
 
-const instagramGradients = [
-  "from-[#405DE6] via-[#5851DB] to-[#833AB4]",
-  "from-[#C13584] via-[#E1306C] to-[#FD1D1D]",
-  "from-[#FCAF45] via-[#F77737] to-[#E1306C]",
-  "from-[#4C68D7] via-[#8A3AB9] to-[#CD486B]",
-  "from-[#515BD4] via-[#8134AF] to-[#DD2A7B]",
-  "from-[#FEDA77] via-[#F58529] to-[#DD2A7B]",
-];
-
-const tiktokGradients = [
-  "from-[#00F2EA] via-[#25F4EE] to-[#FE2C55]",
-  "from-[#FE2C55] via-[#FF004F] to-[#00F2EA]",
-];
-
 function ReelCard({ reel, index, variant = "default" }: { reel: Reel; index: number; variant?: "default" | "evolution" }) {
-  const gradient = reel.platform === "instagram"
-    ? instagramGradients[index % instagramGradients.length]
-    : tiktokGradients[index % tiktokGradients.length];
-
   return (
     <motion.a
       href={reel.url}
@@ -52,25 +34,18 @@ function ReelCard({ reel, index, variant = "default" }: { reel: Reel; index: num
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`group relative overflow-hidden rounded-xl block cursor-pointer w-full ${
+      className={`group relative overflow-hidden rounded-lg block cursor-pointer w-full ${
         variant === "evolution" ? "border border-[#e2a633]/20" : ""
       }`}
-      style={{ aspectRatio: "4/5" }}
+      style={{ aspectRatio: "3/5" }}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} transition-transform duration-700 group-hover:scale-110`} />
+      <div className="absolute inset-0 bg-[#1a1a1a]" />
 
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: "radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 1px, transparent 1px)",
-          backgroundSize: "20px 20px",
-        }}
-      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
+      {/* Platform badge */}
       <div className={`absolute top-3 left-3 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm ${
-        variant === "evolution" ? "bg-[#e2a633]/20" : "bg-black/60"
+        variant === "evolution" ? "bg-[#e2a633]/20" : "bg-white/10"
       }`}>
         {reel.platform === "instagram" ? (
           <Instagram size={12} strokeWidth={1.5} className="text-white/80" />
@@ -82,17 +57,19 @@ function ReelCard({ reel, index, variant = "default" }: { reel: Reel; index: num
         </span>
       </div>
 
-      <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className={`w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-md transition-transform duration-300 group-hover:scale-110 ${
-          variant === "evolution" ? "bg-[#e2a633]/90 text-[#093b18]" : "bg-white/90 text-black"
+      {/* Play button */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <div className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md transition-transform duration-300 group-hover:scale-110 ${
+          variant === "evolution" ? "bg-[#e2a633]/90 text-[#093b18]" : "bg-white/15 text-white/80 group-hover:bg-white/25"
         }`}>
-          <Play size={18} fill="currentColor" className="ml-0.5" />
+          <Play size={22} fill="currentColor" className="ml-0.5" />
         </div>
       </div>
 
+      {/* Caption */}
       {reel.caption && (
-        <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
-          <p className="text-white/90 text-[11px] leading-relaxed line-clamp-2 drop-shadow-sm">
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+          <p className="text-white/80 text-xs leading-relaxed line-clamp-2">
             {reel.caption}
           </p>
         </div>
@@ -143,7 +120,7 @@ export default function ReelGrid({
             style={{ transform: `translateX(-${currentPage * 100}%)` }}
           >
             {pages.map((page, pageIdx) => (
-              <div key={pageIdx} className="grid grid-cols-3 gap-4 min-w-full shrink-0">
+              <div key={pageIdx} className="grid grid-cols-3 gap-1 min-w-full shrink-0">
                 {page.map((reel, i) => (
                   <ReelCard key={i} reel={reel} index={pageIdx * cardsPerPage + i} variant={variant} />
                 ))}
@@ -170,9 +147,9 @@ export default function ReelGrid({
 
   if (layout === "grid-3") {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1">
         {reels.slice(0, 6).map((reel, i) => (
-          <div key={i} className="max-w-[300px] mx-auto w-full">
+          <div key={i} className="w-full">
             <ReelCard reel={reel} index={i} variant={variant} />
           </div>
         ))}
@@ -185,7 +162,7 @@ export default function ReelGrid({
       <div className="overflow-hidden">
         <div className="flex gap-4 animate-scroll-x">
           {[...reels, ...reels].map((reel, i) => (
-            <div key={i} className="shrink-0 w-[200px] md:w-[260px]">
+            <div key={i} className="shrink-0 w-[140px] md:w-[180px]">
               <ReelCard reel={reel} index={i} variant={variant} />
             </div>
           ))}

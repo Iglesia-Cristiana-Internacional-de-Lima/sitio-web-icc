@@ -7,15 +7,18 @@ import Link from "next/link";
 export default function MercyHero() {
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-[#0d0d0d]">
-      {/* Background image */}
+      {/* Background video */}
       <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1600&q=80)",
-          }}
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          suppressHydrationWarning
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/mercy/video-portada-mercy.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#0d0d0d]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
       </div>

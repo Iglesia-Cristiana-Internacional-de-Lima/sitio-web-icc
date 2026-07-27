@@ -66,12 +66,12 @@ export default function Ministerios() {
             <div className="w-6 h-6 border-2 border-[var(--fg-30)] border-t-[var(--fg)] rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--line-strong)]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px">
             {ministerios.map((m, i) => (
               <MinisterioCard key={m.id} m={m} index={i} />
             ))}
             {/* Filler card */}
-            <div className="bg-[var(--bg)] p-8 flex flex-col justify-between min-h-[400px]">
+            <div className="bg-[var(--bg)] p-8 flex flex-col justify-between min-h-[400px] border border-[var(--line)]">
               <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--fg-40)] uppercase">
                 ¿No encuentras el tuyo?
               </span>
