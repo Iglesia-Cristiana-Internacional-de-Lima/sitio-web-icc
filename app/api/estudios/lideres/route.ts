@@ -25,7 +25,7 @@ export async function GET() {
     });
 
     // ponytail: map titulo->rol for frontend compat
-    const data = lideres.map((l) => ({ ...l, rol: l.titulo }));
+    const data = lideres.map((l: typeof lideres[number]) => ({ ...l, rol: l.titulo }));
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
