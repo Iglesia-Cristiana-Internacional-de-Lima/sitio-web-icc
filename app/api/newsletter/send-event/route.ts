@@ -55,10 +55,10 @@ export async function POST(request: Request) {
       select: { suscriptorId: true },
     });
 
-    const suscriptoresYaEnviados = new Set(enviosPrevios.map((e) => e.suscriptorId));
+    const suscriptoresYaEnviados = new Set(enviosPrevios.map((e: { suscriptorId: number }) => e.suscriptorId));
 
     const suscriptoresPendientes = suscriptores.filter(
-      (s) => !suscriptoresYaEnviados.has(s.id)
+      (s: { id: number; email: string }) => !suscriptoresYaEnviados.has(s.id)
     );
 
     if (suscriptoresPendientes.length === 0) {
