@@ -3,7 +3,8 @@ import prisma from '@/lib/prisma';
 import { Resend } from 'resend';
 import { EventNotificationEmail } from '@/components/emails/EventNotificationEmail';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ponytail: lazy init — build-time has no env vars
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.NEWSLETTER_FROM || 'onboarding@resend.dev';
 
 export async function POST(request: Request) {
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
 
     for (const suscriptor of suscriptoresPendientes) {
       try {
-        const data = await resend.emails.send({
+        const data = await getResend().emails.send({
           from: fromEmail,
           to: [suscriptor.email],
           subject: `Nuevo Evento: ${evento.titulo}`,

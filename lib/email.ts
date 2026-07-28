@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ponytail: lazy init — build-time has no env vars
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 interface EmailReservaParams {
   nombreUsuario: string;
@@ -23,7 +24,7 @@ export async function enviarEmailConfirmacion(params: EmailReservaParams) {
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: process.env.EMAIL_FROM || "Estudios Bíblicos <onboarding@resend.dev>",
       to: contactoUsuario,
       subject: "Confirmación de tu estudio bíblico",
@@ -109,7 +110,7 @@ export async function enviarEmailNotificacionLider(
   const { nombreUsuario, contactoUsuario, modalidad, mensaje, fechaRegistro } = params;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: process.env.EMAIL_FROM || "Estudios Bíblicos <onboarding@resend.dev>",
       to: emailLider,
       subject: `Nueva reserva de estudio bíblico - ${nombreUsuario}`,

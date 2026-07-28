@@ -3,7 +3,8 @@ import prisma from '@/lib/prisma';
 import { Resend } from 'resend';
 import { WelcomeEmail } from '@/components/emails/WelcomeEmail';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ponytail: lazy init — build-time has no env vars
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.NEWSLETTER_FROM || 'onboarding@resend.dev';
 
 // Expresión regular simple para validar formato de email
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
 
     // 4. Enviar el correo de bienvenida usando Resend
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: fromEmail,
         to: [email],
         subject: '¡Gracias por suscribirte a nuestra información!',
