@@ -131,9 +131,14 @@ model Evento {
   sede        Sede?     @relation(fields: [sedeId], references: [id])
   imagen      String?
   destacado   Boolean   @default(false)
+  publicado   Boolean   @default(false)
+  ubicacion   String?
+  responsable String?
   activo      Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  enviosNewsletter newsletter_envios[]
 
   @@map("eventos")
 }
@@ -200,5 +205,21 @@ model suscriptores {
   estado    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
+  enviosNewsletter newsletter_envios[]
+}
+
+model newsletter_envios {
+  id            Int       @id @default(autoincrement())
+  eventoId      Int
+  evento        Evento    @relation(fields: [eventoId], references: [id])
+  suscriptorId  Int
+  suscriptor    suscriptores @relation(fields: [suscriptorId], references: [id])
+  enviado       Boolean   @default(false)
+  enviadoAt     DateTime?
+  error         String?
+  createdAt     DateTime  @default(now())
+
+  @@unique([eventoId, suscriptorId])
 }
 

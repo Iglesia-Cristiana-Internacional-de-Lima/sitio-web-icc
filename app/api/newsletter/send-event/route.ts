@@ -88,10 +88,10 @@ export async function POST(request: Request) {
           subject: `Nuevo Evento: ${evento.titulo}`,
           react: EventNotificationEmail({
             titulo: evento.titulo,
-            descripcion: evento.descripcion,
+            descripcion: evento.descripcion || '',
             fecha: fechaFormateada,
-            ubicacion: evento.ubicacion,
-            responsable: evento.responsable,
+            ubicacion: evento.ubicacion || 'Por confirmar',
+            responsable: evento.responsable || 'Por confirmar',
           }) as React.ReactElement,
         });
 
