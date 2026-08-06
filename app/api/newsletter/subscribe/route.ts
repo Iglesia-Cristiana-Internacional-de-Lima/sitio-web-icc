@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { Resend } from 'resend';
 import { WelcomeEmail } from '@/components/emails/WelcomeEmail';
+import { rateLimit } from '@/lib/rate-limit';
 
 // ponytail: lazy init — build-time has no env vars
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
@@ -12,6 +13,15 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   try {
+    // ponytail: rate limit by IP, 3 subscribes per minute
+    const ip = (request.headers.get("x-forwarded-for") || "unknown").split(",")[0];
+    const { ok } = rateLimit(`subscribe:${ip}`, { limit: 3, windowMs: 60_000 });
+    if (!ok) {
+      return NextResponse.json(
+        { error: "Demasiados intentos. Intenta de nuevo en un minuto." },
+        { status: 429 }
+      );
+    }
     const body = await request.json();
     const { email, nombre } = body;
 

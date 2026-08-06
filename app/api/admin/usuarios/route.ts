@@ -16,7 +16,11 @@ export async function GET() {
   }
 
   const usuarios = await prisma.usuario.findMany({
-    include: { rol: true },
+    select: {
+      id: true, email: true, nombre: true, activo: true,
+      rolId: true, rol: true, createdAt: true, updatedAt: true,
+      titulo: true, imagen: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 

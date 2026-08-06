@@ -3,6 +3,11 @@ import { Resend } from "resend";
 // ponytail: lazy init — build-time has no env vars
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
+// ponytail: prevent XSS in email HTML templates
+function esc(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 interface EmailReservaParams {
   nombreUsuario: string;
   contactoUsuario: string;
@@ -51,28 +56,28 @@ export async function enviarEmailConfirmacion(params: EmailReservaParams) {
               <p style="margin: 10px 0 0; opacity: 0.8;">Iglesia Cristiana Internacional de Lima</p>
             </div>
             <div class="content">
-              <p>Hola <strong>${nombreUsuario}</strong>,</p>
+              <p>Hola <strong>${esc(nombreUsuario)}</strong>,</p>
               <p>Hemos recibido tu solicitud de estudio bíblico. Nos pondremos en contacto contigo en las próximas 24 horas para coordinar la fecha y hora.</p>
 
               <div class="detail">
                 <div class="label">Líder asignado</div>
-                <div class="value">${nombreLider}</div>
+                <div class="value">${esc(nombreLider)}</div>
               </div>
 
               <div class="detail">
                 <div class="label">Modalidad</div>
-                <div class="value" style="text-transform: capitalize;">${modalidad}</div>
+                <div class="value" style="text-transform: capitalize;">${esc(modalidad)}</div>
               </div>
 
               <div class="detail">
                 <div class="label">Fecha de registro</div>
-                <div class="value">${fechaRegistro}</div>
+                <div class="value">${esc(fechaRegistro)}</div>
               </div>
 
               ${mensaje ? `
               <div class="detail">
                 <div class="label">Tu mensaje</div>
-                <div class="value">${mensaje}</div>
+                <div class="value">${esc(mensaje)}</div>
               </div>
               ` : ""}
 
@@ -138,28 +143,28 @@ export async function enviarEmailNotificacionLider(
             <div class="content">
               <div class="detail">
                 <div class="label">Nombre</div>
-                <div class="value">${nombreUsuario}</div>
+                <div class="value">${esc(nombreUsuario)}</div>
               </div>
 
               <div class="detail">
                 <div class="label">Contacto</div>
-                <div class="value">${contactoUsuario}</div>
+                <div class="value">${esc(contactoUsuario)}</div>
               </div>
 
               <div class="detail">
                 <div class="label">Modalidad preferida</div>
-                <div class="value" style="text-transform: capitalize;">${modalidad}</div>
+                <div class="value" style="text-transform: capitalize;">${esc(modalidad)}</div>
               </div>
 
               <div class="detail">
                 <div class="label">Fecha de solicitud</div>
-                <div class="value">${fechaRegistro}</div>
+                <div class="value">${esc(fechaRegistro)}</div>
               </div>
 
               ${mensaje ? `
               <div class="detail">
                 <div class="label">Mensaje del interesado</div>
-                <div class="value">${mensaje}</div>
+                <div class="value">${esc(mensaje)}</div>
               </div>
               ` : ""}
 

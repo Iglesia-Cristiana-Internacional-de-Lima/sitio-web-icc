@@ -122,6 +122,10 @@ export async function POST(request: NextRequest) {
 
 // Obtener reservas (para admin)
 export async function GET(request: NextRequest) {
+  const session = await getSession();
+  if (!session || (session.rol !== "ADMIN" && session.rol !== "LIDER")) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const { searchParams } = new URL(request.url);
     const estado = searchParams.get("estado");

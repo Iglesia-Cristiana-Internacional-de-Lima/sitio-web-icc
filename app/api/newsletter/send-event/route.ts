@@ -2,12 +2,16 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { Resend } from 'resend';
 import { EventNotificationEmail } from '@/components/emails/EventNotificationEmail';
+import { requireAdmin } from '@/lib/auth';
 
 // ponytail: lazy init — build-time has no env vars
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.NEWSLETTER_FROM || 'onboarding@resend.dev';
 
 export async function POST(request: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const body = await request.json();
     const { eventoId } = body;

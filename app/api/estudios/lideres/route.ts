@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth";
 
 // GET: Obtener todos los líderes activos
 export async function GET() {
@@ -39,6 +40,9 @@ export async function GET() {
 
 // POST: Crear un nuevo líder (admin)
 export async function POST(request: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const body = await request.json();
 

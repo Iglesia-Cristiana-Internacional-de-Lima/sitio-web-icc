@@ -1,14 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { createSession, hashPassword } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    // ponytail: rate limit by IP, 5 registrations per minute
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    const { ok } = rateLimit(`register:${ip}`, { limit: 5, windowMs: 60_000 });
+    if (!ok) {
+      return NextResponse.json(
+        { error: "Demasiados intentos. Intenta de nuevo en un minuto." },
+        { status: 429 }
+      );
+    }
+
     const { email, password, nombre } = await request.json();
 
     if (!email || !nombre) {
       return NextResponse.json(
         { error: "Email y nombre requeridos" },
+        { status: 400 }
+      );
+    }
+
+    if (password && password.length < 8) {
+      return NextResponse.json(
+        { error: "La contraseña debe tener al menos 8 caracteres" },
         { status: 400 }
       );
     }

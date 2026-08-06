@@ -2,7 +2,7 @@ import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
-import { createHmac } from "crypto";
+import { scryptSync, randomBytes } from "crypto";
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -10,9 +10,12 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const SECRET = process.env.AUTH_SECRET || "dev-secret-change-in-prod";
-const hashPassword = (password: string) =>
-  createHmac("sha256", SECRET).update(password).digest("hex");
+const SCRYPT_KEYLEN = 64;
+const SCRYPT_COST = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
+const hashPassword = (password: string) => {
+  const salt = randomBytes(16).toString("hex");
+  return `${salt}:${scryptSync(password, salt, SCRYPT_KEYLEN, SCRYPT_COST).toString("hex")}`;
+};
 
 const rolesIniciales = [
   { nombre: "ADMIN", descripcion: "Administrador con acceso total" },

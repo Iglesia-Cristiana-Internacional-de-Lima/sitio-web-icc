@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth";
 
+// ponytail: admin-only CRUD. Public reads go through /api/public/reels
 export async function GET() {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const reels = await prisma.reel.findMany({
       orderBy: [{ orden: "asc" }, { createdAt: "desc" }],
@@ -14,6 +19,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const body = await request.json();
 
@@ -41,6 +49,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const body = await request.json();
     const id = request.nextUrl.searchParams.get("id") || body.id;
@@ -75,6 +86,9 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
   try {
     const id = request.nextUrl.searchParams.get("id");
 

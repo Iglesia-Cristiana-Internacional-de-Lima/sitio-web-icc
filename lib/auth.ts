@@ -1,8 +1,13 @@
 import { cookies } from "next/headers";
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, timingSafeEqual, scryptSync, randomBytes } from "crypto";
+import { NextResponse } from "next/server";
 import prisma from "./prisma";
 
-const SECRET = process.env.AUTH_SECRET || "dev-secret-change-in-prod";
+if (!process.env.AUTH_SECRET) {
+  // ponytail: fail loud at startup, never run with a default secret
+  throw new Error("AUTH_SECRET env var is required. Generate one: openssl rand -base64 32");
+}
+const SECRET: string = process.env.AUTH_SECRET;
 const COOKIE_NAME = "session";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -73,15 +78,37 @@ export async function clearSession(): Promise<void> {
   cookieStore.delete(COOKIE_NAME);
 }
 
-// ponytail: inline hash, no bcrypt dep for now. Add bcrypt if >1000 users
+/** Returns admin session or null */
+export async function requireAdmin(): Promise<SessionUser | null> {
+  const session = await getSession();
+  if (!session || session.rol !== "ADMIN") return null;
+  return session;
+}
+
+// ponytail: scryptSync from Node stdlib — no bcrypt dep, still slow-hash
+const SCRYPT_KEYLEN = 64;
+const SCRYPT_COST = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
+
 export function hashPassword(password: string): string {
-  return createHmac("sha256", SECRET).update(password).digest("hex");
+  const salt = randomBytes(16).toString("hex");
+  const derived = scryptSync(password, salt, SCRYPT_KEYLEN, SCRYPT_COST).toString("hex");
+  return `${salt}:${derived}`;
 }
 
 export function verifyPassword(password: string, hash: string): boolean {
-  const computed = hashPassword(password);
+  // Support legacy HMAC hashes (no colon) for migration
+  if (!hash.includes(":")) {
+    const legacyHash = createHmac("sha256", SECRET).update(password).digest("hex");
+    try {
+      return timingSafeEqual(Buffer.from(legacyHash), Buffer.from(hash));
+    } catch {
+      return false;
+    }
+  }
+  const [salt, key] = hash.split(":");
+  const derived = scryptSync(password, salt, SCRYPT_KEYLEN, SCRYPT_COST).toString("hex");
   try {
-    return timingSafeEqual(Buffer.from(computed), Buffer.from(hash));
+    return timingSafeEqual(Buffer.from(derived), Buffer.from(key));
   } catch {
     return false;
   }
