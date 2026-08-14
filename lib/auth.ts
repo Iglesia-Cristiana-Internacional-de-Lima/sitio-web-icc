@@ -3,17 +3,17 @@ import { createHmac, timingSafeEqual, scryptSync, randomBytes } from "crypto";
 import { NextResponse } from "next/server";
 import prisma from "./prisma";
 
-if (!process.env.AUTH_SECRET) {
-  // ponytail: fail loud at startup, never run with a default secret
-  throw new Error("AUTH_SECRET env var is required. Generate one: openssl rand -base64 32");
+function getSecret(): string {
+  const s = process.env.AUTH_SECRET;
+  if (!s) throw new Error("AUTH_SECRET env var is required. Generate one: openssl rand -base64 32");
+  return s;
 }
-const SECRET: string = process.env.AUTH_SECRET;
 const COOKIE_NAME = "session";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 // ponytail: HMAC token instead of JWT lib, ~10 lines vs dependency
 function sign(payload: string): string {
-  const sig = createHmac("sha256", SECRET).update(payload).digest("base64url");
+  const sig = createHmac("sha256", getSecret()).update(payload).digest("base64url");
   return `${Buffer.from(payload).toString("base64url")}.${sig}`;
 }
 
@@ -21,7 +21,7 @@ function verify(token: string): string | null {
   const [payloadB64, sig] = token.split(".");
   if (!payloadB64 || !sig) return null;
   const payload = Buffer.from(payloadB64, "base64url").toString();
-  const expected = createHmac("sha256", SECRET).update(payload).digest("base64url");
+  const expected = createHmac("sha256", getSecret()).update(payload).digest("base64url");
   try {
     if (!timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
   } catch {
@@ -98,7 +98,7 @@ export function hashPassword(password: string): string {
 export function verifyPassword(password: string, hash: string): boolean {
   // Support legacy HMAC hashes (no colon) for migration
   if (!hash.includes(":")) {
-    const legacyHash = createHmac("sha256", SECRET).update(password).digest("hex");
+    const legacyHash = createHmac("sha256", getSecret()).update(password).digest("hex");
     try {
       return timingSafeEqual(Buffer.from(legacyHash), Buffer.from(hash));
     } catch {
