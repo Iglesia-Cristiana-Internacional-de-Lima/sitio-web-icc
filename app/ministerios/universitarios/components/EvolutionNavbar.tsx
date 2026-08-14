@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, User } from "lucide-react";
 import EvolutionIcon from "./EvolutionIcon";
+import { useSession } from "@/hooks/useSession";
 
 const navItems = [
   { label: "PUCP", href: "#pucp" },
@@ -13,6 +14,7 @@ const navItems = [
 ];
 
 export default function EvolutionNavbar() {
+  const { user, loading, logout } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -73,6 +75,32 @@ export default function EvolutionNavbar() {
 
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-4">
+          {!loading && (
+            user ? (
+              <>
+                <Link
+                  href="/mi-cuenta"
+                  className="inline-flex items-center gap-2 text-[13px] text-[#e2a633]/70 hover:text-[#e2a633] transition-colors"
+                >
+                  <User size={16} />
+                  {user.nombre.split(" ")[0]}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-[13px] text-[#e2a633]/50 hover:text-[#e2a633] transition-colors"
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-[13px] text-[#e2a633]/70 hover:text-[#e2a633] transition-colors"
+              >
+                Ingresar
+              </Link>
+            )
+          )}
           <Link
             href="#pucp"
             className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#e2a633] text-[#093b18] text-[13px] font-medium hover:bg-[#e2a633]/90 transition-all"
@@ -109,6 +137,31 @@ export default function EvolutionNavbar() {
               </Link>
             ))}
             <div className="h-px bg-[#e2a633]/10 my-2" />
+            {user ? (
+              <>
+                <Link
+                  href="/mi-cuenta"
+                  onClick={() => setOpen(false)}
+                  className="text-sm text-[#e2a633]/60"
+                >
+                  Mi cuenta →
+                </Link>
+                <button
+                  onClick={() => { logout(); setOpen(false); }}
+                  className="text-sm text-[#e2a633]/40 text-left"
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="text-sm text-[#e2a633]/60"
+              >
+                Ingresar →
+              </Link>
+            )}
             <Link
               href="/"
               onClick={() => setOpen(false)}

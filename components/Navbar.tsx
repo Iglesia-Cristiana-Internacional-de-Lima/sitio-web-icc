@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useSession } from "@/hooks/useSession";
@@ -9,8 +10,8 @@ import { useSession } from "@/hooks/useSession";
 const navItems = [
   { label: "Sedes", href: "/#sedes" },
   { label: "Ministerios", href: "/#ministerios" },
-  { label: "Estudios", href: "/estudios" },
   { label: "Eventos", href: "/eventos" },
+  { label: "Estudios", href: "/estudios" },
   { label: "Mercy", href: "/mercy" },
   { label: "Nosotros", href: "/#about" },
 ];
@@ -20,6 +21,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { theme, toggle } = useTheme();
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -27,6 +30,19 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    if (!href.startsWith("/#")) return;
+    const hash = href.slice(1);
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.querySelector(hash);
+      if (el) {
+        window.history.replaceState(null, "", hash);
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <header
@@ -60,6 +76,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
               className="text-[13px] text-[var(--fg-70)] hover:text-[var(--fg)] transition-colors duration-300 relative group"
             >
               {item.label}
@@ -105,7 +122,8 @@ export default function Navbar() {
           )}
           <Link
             href="/#sedes"
-            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--inverse-bg)] text-[var(--inverse-fg)] text-[13px] font-medium hover:opacity-90 transition-all"
+            onClick={(e) => handleNavClick(e, "/#sedes")}
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--accent-warm)] text-white text-[13px] font-medium hover:opacity-90 transition-all"
           >
             Visítanos
             <span className="inline-block group-hover:translate-x-0.5 transition-transform">→</span>
@@ -139,7 +157,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={(e) => { handleNavClick(e, item.href); setOpen(false); }}
                 className="font-display text-2xl text-[var(--fg-90)] hover:text-[var(--fg)]"
               >
                 {item.label}

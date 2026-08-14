@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
-import Link from "next/link";
+
 
 export default function EstudiosHero() {
   return (
@@ -72,8 +72,11 @@ export default function EstudiosHero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
-                <Link
-                  href="#testimonios"
+                <button
+                  onClick={() => {
+                    const target = document.getElementById("testimonios") || document.getElementById("lideres");
+                    target?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black text-[15px] font-medium hover:bg-white/90 transition-all"
                 >
                   <Play size={18} className="fill-current" />
@@ -81,7 +84,7 @@ export default function EstudiosHero() {
                   <span className="inline-block group-hover:translate-x-1 transition-transform">
                     →
                   </span>
-                </Link>
+                </button>
               </motion.div>
             </div>
 

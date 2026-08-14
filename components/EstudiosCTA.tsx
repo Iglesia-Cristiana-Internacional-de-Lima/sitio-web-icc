@@ -55,7 +55,7 @@ export default function EstudiosCTA() {
             </p>
             <Link
               href="/estudios"
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--inverse-bg)] text-[var(--inverse-fg)] text-sm font-medium hover:opacity-90 transition-all"
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--accent-warm)] text-white text-sm font-medium hover:opacity-90 transition-all"
             >
               Reservar estudio
               <ArrowUpRight

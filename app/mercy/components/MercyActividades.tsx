@@ -117,7 +117,7 @@ export default function MercyActividades() {
                   <span
                     className={`inline-block px-3 py-1 rounded-full font-mono text-[10px] tracking-[0.2em] uppercase ${
                       act.spotsLeft <= 5
-                        ? "bg-[var(--inverse-bg)] text-[var(--inverse-fg)]"
+                        ? "bg-[var(--accent-warm)] text-white"
                         : "bg-[var(--surface-10)] text-[var(--fg-70)]"
                     }`}
                   >
@@ -160,10 +160,15 @@ export default function MercyActividades() {
                 </div>
 
                 {/* CTA */}
-                <button className="shrink-0 px-5 py-2.5 rounded-full border border-[var(--line-strong)] text-[var(--fg-70)] text-sm font-medium group-hover:bg-[var(--inverse-bg)] group-hover:text-[var(--inverse-fg)] group-hover:border-[var(--inverse-bg)] transition-all flex items-center gap-2">
+                <a
+                  href={`https://wa.me/51999999999?text=${encodeURIComponent(`Hola! Quiero inscribirme como voluntario en: ${act.title} (${act.date})`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 px-5 py-2.5 rounded-full border border-[var(--line-strong)] text-[var(--fg-70)] text-sm font-medium group-hover:bg-[var(--accent-warm)] group-hover:text-white group-hover:border-[var(--accent-warm)] transition-all flex items-center gap-2"
+                >
                   Inscribirme
                   <ArrowRight size={14} strokeWidth={1.5} />
-                </button>
+                </a>
               </div>
             </motion.div>
           ))}

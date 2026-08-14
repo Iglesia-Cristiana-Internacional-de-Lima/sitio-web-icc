@@ -24,6 +24,10 @@
   --fg-muted: var(--fg-60);
   --fg-subtle: var(--fg-40);
   --accent: #f5f3ee;
+  --accent-warm: #D4A574;
+  --accent-warm-10: rgba(212, 165, 116, 0.10);
+  --accent-warm-20: rgba(212, 165, 116, 0.20);
+  --accent-warm-30: rgba(212, 165, 116, 0.30);
   --inverse-bg: #ffffff;
   --inverse-fg: #0d0d0d;
   --nav-bg: rgba(13, 13, 13, 0.7);
@@ -52,6 +56,10 @@
   --fg-muted: var(--fg-60);
   --fg-subtle: var(--fg-40);
   --accent: #0d0d0d;
+  --accent-warm: #9B6B3A;
+  --accent-warm-10: rgba(155, 107, 58, 0.10);
+  --accent-warm-20: rgba(155, 107, 58, 0.20);
+  --accent-warm-30: rgba(155, 107, 58, 0.30);
   --inverse-bg: #0d0d0d;
   --inverse-fg: #ffffff;
   --nav-bg: rgba(245, 243, 238, 0.7);

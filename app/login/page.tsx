@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Mail, Lock, User } from "lucide-react";
+import { ArrowRight, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 function LoginForm() {
@@ -18,6 +18,7 @@ function LoginForm() {
   const [nombre, setNombre] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,14 +129,22 @@ function LoginForm() {
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
               />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 minLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-12 pr-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-lg pl-12 pr-12 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
@@ -146,7 +155,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all disabled:opacity-50"
+            className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D4A574] text-white text-sm font-medium hover:bg-[#C8956A] transition-all disabled:opacity-50"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />

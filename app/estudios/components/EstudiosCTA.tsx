@@ -44,7 +44,7 @@ export default function EstudiosCTA() {
           >
             <a
               href="#lideres"
-              className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-white text-black text-base font-medium hover:bg-white/90 transition-all"
+              className="group inline-flex items-center gap-3 px-10 py-5 rounded-full bg-[var(--accent-warm)] text-white text-base font-medium hover:opacity-90 transition-all"
             >
               Elegir mi líder y reservar
               <ArrowRight

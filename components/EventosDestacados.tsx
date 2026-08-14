@@ -84,13 +84,16 @@ export default function EventosDestacados() {
             className="space-y-6"
           >
             {/* Category label */}
-            <div className="flex items-center gap-3 mb-8">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-5)] border border-[var(--line)]">
-                <Users size={14} strokeWidth={1.5} className="text-[var(--fg-60)]" />
-                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--fg-60)]">
-                  Para ti si... ya eres parte de la familia
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent-warm-10)] border border-[var(--accent-warm-30)]">
+                <Calendar size={14} strokeWidth={1.5} className="text-[var(--accent-warm)]" />
+                <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--accent-warm)]">
+                  Eventos de la Iglesia
                 </span>
-              </span>
+              </div>
+              <p className="text-[var(--fg-50)] text-sm mt-3">
+                Actividades semanales para quienes ya son parte de la familia.
+              </p>
             </div>
 
             {/* Event cards */}
@@ -109,8 +112,8 @@ export default function EventosDestacados() {
                   }`}
                 >
                   <div className="flex items-start gap-6">
-                    <div className="w-12 h-12 rounded-full bg-[var(--surface-5)] flex items-center justify-center shrink-0">
-                      <evento.icon size={20} strokeWidth={1.5} className="text-[var(--fg-60)]" />
+                    <div className="w-12 h-12 rounded-full bg-[var(--accent-warm-10)] flex items-center justify-center shrink-0">
+                      <evento.icon size={20} strokeWidth={1.5} className="text-[var(--accent-warm)]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-display text-2xl text-[var(--fg)] mb-2">
@@ -157,13 +160,16 @@ export default function EventosDestacados() {
             className="space-y-6"
           >
             {/* Category label */}
-            <div className="flex items-center gap-3 mb-8">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-5)] border border-[var(--line)]">
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-5)] border border-[var(--line)]">
                 <BookOpen size={14} strokeWidth={1.5} className="text-[var(--fg-60)]" />
                 <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--fg-60)]">
-                  Para ti si... es tu primera vez
+                  Estudios Bíblicos
                 </span>
-              </span>
+              </div>
+              <p className="text-[var(--fg-50)] text-sm mt-3">
+                Conversaciones personales sobre la Biblia, ideales si es tu primera vez.
+              </p>
             </div>
 
             {/* Featured CTA card */}
@@ -209,7 +215,7 @@ export default function EventosDestacados() {
 
                   <Link
                     href={evento.href}
-                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--inverse-bg)] text-[var(--inverse-fg)] text-sm font-medium hover:opacity-90 transition-all"
+                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--accent-warm)] text-white text-sm font-medium hover:opacity-90 transition-all"
                   >
                     {evento.cta}
                     <ArrowRight

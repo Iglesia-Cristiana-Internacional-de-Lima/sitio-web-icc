@@ -64,7 +64,7 @@ export default function Sedes() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Map placeholder */}
           <div className="lg:col-span-5 order-2 lg:order-1">
-            <div className="sticky top-28 aspect-[3/4] lg:aspect-auto lg:h-[640px] bg-[#191919] border border-white/10 rounded-sm overflow-hidden relative">
+            <div className="sticky top-28 aspect-[3/4] lg:aspect-auto lg:h-[640px] bg-[#1a1714] border border-[var(--accent-warm-20)] rounded-lg overflow-hidden relative">
               <MapVisualization sedes={sedes} activeIndex={active} />
             </div>
           </div>
@@ -126,46 +126,30 @@ export default function Sedes() {
 }
 
 function MapVisualization({ sedes, activeIndex }: { sedes: Sede[]; activeIndex: number }) {
-  // Convert lat/lng to SVG coordinates (simplified projection)
+  const bounds = {
+    minLat: -12.22, maxLat: -11.85,
+    minLng: -77.18, maxLng: -76.82,
+  };
+  const pad = 12;
+  const w = 100 - pad * 2;
+  const h = 100 - pad * 2;
+
+  const toSvg = (lat: number, lng: number) => ({
+    x: pad + ((lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * w,
+    y: pad + ((bounds.maxLat - lat) / (bounds.maxLat - bounds.minLat)) * h,
+  });
+
   const points = sedes.map((s) => ({
-    x: s.lng ? ((s.lng + 77.1) * 100) : 50,
-    y: s.lat ? ((s.lat + 12.1) * -100) : 50,
+    ...toSvg(s.lat || -12.05, s.lng || -77.04),
     name: s.nombre,
+    distrito: s.distrito,
   }));
 
-  return (
-    <div className="absolute inset-0 p-8">
-      {/* Stylized topographic background */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-40"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
-            <path
-              d="M 5 0 L 0 0 0 5"
-              fill="none"
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth="0.2"
-            />
-          </pattern>
-        </defs>
-        <rect width="100" height="100" fill="url(#grid)" />
-        {/* Topo lines */}
-        {[20, 35, 50, 65, 80].map((r) => (
-          <circle
-            key={r}
-            cx="50"
-            cy="55"
-            r={r}
-            fill="none"
-            stroke="rgba(255,255,255,0.05)"
-            strokeWidth="0.15"
-          />
-        ))}
-      </svg>
+  const activeSede = sedes[activeIndex];
+  const accent = "#D4A574";
 
+  return (
+    <div className="absolute inset-0 p-8 flex flex-col">
       {/* Header */}
       <div className="relative z-10 flex items-start justify-between">
         <div>
@@ -175,33 +159,71 @@ function MapVisualization({ sedes, activeIndex }: { sedes: Sede[]; activeIndex: 
           <p className="font-display text-2xl text-white mt-2">
             {points[activeIndex]?.name}
           </p>
+          {activeSede?.distrito && (
+            <p className="text-white/50 text-sm mt-1">{activeSede.distrito}</p>
+          )}
         </div>
       </div>
 
-      {/* Dots */}
+      {/* Map SVG */}
       <svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 100 100"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
       >
+        <defs>
+          <radialGradient id="glow">
+            <stop offset="0%" stopColor={accent} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={accent} stopOpacity="0" />
+          </radialGradient>
+          <pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
+            <path d="M 5 0 L 0 0 0 5" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="0.15" />
+          </pattern>
+        </defs>
+        <rect width="100" height="100" fill="url(#grid)" />
+
+        {/* Lima coastline (simplified Pacific coast) */}
+        <path
+          d="M 2,15 Q 8,25 5,40 Q 3,55 6,70 Q 10,85 8,98"
+          fill="none"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="0.4"
+          strokeDasharray="1,1"
+        />
+        <text x="3" y="50" fill="rgba(255,255,255,0.06)" fontSize="2.5" fontFamily="monospace" transform="rotate(-90,3,50)">
+          OCÉANO PACÍFICO
+        </text>
+
+        {/* Connection lines between sedes */}
+        {points.map((p, i) => {
+          if (i === 0) return null;
+          const prev = points[i - 1];
+          return (
+            <line key={`line-${i}`} x1={prev.x} y1={prev.y} x2={p.x} y2={p.y}
+              stroke="rgba(255,255,255,0.06)" strokeWidth="0.15" strokeDasharray="0.5,0.5" />
+          );
+        })}
+
+        {/* Sede points */}
         {points.map((p, i) => (
           <g key={i}>
             {activeIndex === i && (
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r="4"
-                fill="rgba(255,255,255,0.15)"
-                className="animate-ping"
-              />
+              <>
+                <circle cx={p.x} cy={p.y} r="8" fill="url(#glow)" />
+                <circle cx={p.x} cy={p.y} r="3.5" fill="none" stroke={accent} strokeWidth="0.15" opacity="0.4" className="animate-ping" />
+              </>
             )}
             <circle
-              cx={p.x}
-              cy={p.y}
-              r={activeIndex === i ? "1.2" : "0.8"}
-              fill={activeIndex === i ? "white" : "rgba(255,255,255,0.4)"}
-              className="transition-all"
+              cx={p.x} cy={p.y}
+              r={activeIndex === i ? "1.8" : "1"}
+              fill={activeIndex === i ? accent : "rgba(255,255,255,0.35)"}
+              className="transition-all duration-500"
             />
+            {activeIndex === i && (
+              <text x={p.x + 3} y={p.y + 0.5} fill="white" fontSize="2.2" fontFamily="sans-serif" opacity="0.8">
+                {p.distrito || p.name}
+              </text>
+            )}
           </g>
         ))}
       </svg>
@@ -209,10 +231,10 @@ function MapVisualization({ sedes, activeIndex }: { sedes: Sede[]; activeIndex: 
       {/* Footer coords */}
       <div className="absolute bottom-8 left-8 right-8 z-10 flex items-end justify-between">
         <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/40">
-          12.0464°S · 77.0428°W
+          {activeSede?.lat ? `${Math.abs(activeSede.lat).toFixed(4)}°S` : "12.0464°S"} · {activeSede?.lng ? `${Math.abs(activeSede.lng).toFixed(4)}°W` : "77.0428°W"}
         </span>
-        <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-white/60">
-          0{activeIndex + 1} / 06
+        <span className="font-mono text-[10px] tracking-[0.28em] uppercase" style={{ color: accent }}>
+          0{activeIndex + 1} / {String(sedes.length).padStart(2, "0")}
         </span>
       </div>
     </div>

@@ -43,7 +43,7 @@ export default function MercyCTA() {
           >
             <a
               href="#actividades"
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all"
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[var(--accent-warm)] text-white text-sm font-medium hover:opacity-90 transition-all"
             >
               <Users size={18} strokeWidth={1.5} />
               Ver actividades

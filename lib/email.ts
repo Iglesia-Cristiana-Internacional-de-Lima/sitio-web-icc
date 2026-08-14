@@ -3,6 +3,11 @@ import { Resend } from "resend";
 // ponytail: lazy init — build-time has no env vars
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
+function hasValidKey(): boolean {
+  const k = process.env.RESEND_API_KEY;
+  return !!k && k.startsWith("re_") && k.length > 10;
+}
+
 // ponytail: prevent XSS in email HTML templates
 function esc(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -23,9 +28,13 @@ interface EmailReservaParams {
 export async function enviarEmailConfirmacion(params: EmailReservaParams) {
   const { nombreUsuario, contactoUsuario, nombreLider, modalidad, mensaje, fechaRegistro } = params;
 
-  // Solo enviar si el contacto es un email
   if (!contactoUsuario.includes("@")) {
     return { success: false, reason: "contact_is_whatsapp" };
+  }
+
+  if (!hasValidKey()) {
+    console.warn("RESEND_API_KEY no configurada — email omitido");
+    return { success: false, reason: "no_api_key" };
   }
 
   try {
@@ -113,6 +122,11 @@ export async function enviarEmailNotificacionLider(
   params: EmailReservaParams
 ) {
   const { nombreUsuario, contactoUsuario, modalidad, mensaje, fechaRegistro } = params;
+
+  if (!hasValidKey()) {
+    console.warn("RESEND_API_KEY no configurada — notificación al líder omitida");
+    return { success: false, reason: "no_api_key" };
+  }
 
   try {
     const { data, error } = await getResend().emails.send({

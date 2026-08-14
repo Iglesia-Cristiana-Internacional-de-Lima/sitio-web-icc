@@ -47,12 +47,26 @@ npm run build
 npm start
 ```
 
-## Roadmap pendiente (siguientes iteraciones)
+## Estado actual
 
-- Páginas internas: `/estudios`, `/eventos`, `/mercy`, `/login`
-- CMS: panel admin con roles (Administrador, Líder, Suscriptor)
-- Integración Google Maps real en Sedes
-- Suscripción de correo conectada a backend
-- Modo claro (toggle día/noche)
-- Mapa interactivo de charlas bíblicas en `/eventos`
-- Reels de Instagram embebidos en `/mercy`
+### Implementado
+
+- Páginas públicas: `/estudios`, `/eventos`, `/mercy`, `/login`, `/ministerios/*`
+- Panel admin: `/admin/eventos` (gestión de eventos)
+- Panel usuario: `/mi-cuenta` (perfil, reservas, mis estudios)
+- Autenticación con NextAuth (login/registro)
+- Sistema de roles en BD (Rol model con Prisma)
+- Integración Resend (código listo en `lib/email.ts` — confirmaciones de reserva y notificaciones a líderes)
+- API de newsletter (`/api/newsletter/subscribe`, `/api/newsletter/send-event`)
+- Ministerios: universitarios, casados, profesionales
+
+### Pendiente por probar / completar
+
+- [ ] **Integración Resend**: configurar API key real (`RESEND_API_KEY`) y verificar dominio remitente en Resend
+- [ ] **Probar flujo con cuenta Administrador**: crear usuario admin, verificar acceso a `/admin/*`, gestión de eventos y usuarios
+- [ ] **Probar flujo con cuenta Líder**: asignar rol líder, verificar permisos diferenciados (ver sus estudios asignados, recibir notificaciones)
+- [ ] **Probar flujo con cuenta Suscriptor**: registro, reserva de estudios, panel `/mi-cuenta`
+- [ ] **Newsletter real**: envío masivo de campañas a suscriptores vía Resend
+- [ ] **Google Maps real** en sección Sedes (actualmente mapa estilizado)
+- [ ] **Modo claro** (toggle día/noche)
+- [ ] **Reels de Instagram** embebidos en `/mercy`

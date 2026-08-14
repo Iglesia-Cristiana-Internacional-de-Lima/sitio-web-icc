@@ -151,7 +151,7 @@ export default function EventosLista() {
                   onClick={() => setFilter(cat)}
                   className={`px-4 py-2 rounded-full text-xs font-mono tracking-wider uppercase transition-all ${
                     filter === cat
-                      ? "bg-white text-black"
+                      ? "bg-[#D4A574] text-white"
                       : "border border-white/20 text-white/70 hover:border-white/40 hover:text-white"
                   }`}
                 >
@@ -182,7 +182,7 @@ export default function EventosLista() {
                   <span
                     className={`inline-block px-3 py-1 rounded-full font-mono text-[10px] tracking-[0.2em] uppercase ${
                       event.featured
-                        ? "bg-white text-black"
+                        ? "bg-[#D4A574] text-white"
                         : "bg-white/10 text-white/70"
                     }`}
                   >

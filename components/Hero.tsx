@@ -75,7 +75,7 @@ export default function Hero() {
         >
           <Link
             href="#sedes"
-            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all"
+            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#D4A574] text-white text-sm font-medium hover:bg-[#C8956A] transition-all"
           >
             <MapPin size={16} strokeWidth={1.5} />
             Encuentra tu sede
