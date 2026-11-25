@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     const whatsappLink = generarLinkWhatsApp({
-      numero: process.env.WHATSAPP_NUMERO || "51999999999",
+      numero: process.env.WHATSAPP_NUMERO || "51932835086",
       nombreUsuario: session.nombre,
       nombreLider: lider.nombre,
       modalidad: body.modalidad,

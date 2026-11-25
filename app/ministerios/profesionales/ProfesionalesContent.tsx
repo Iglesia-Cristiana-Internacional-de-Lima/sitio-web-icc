@@ -183,7 +183,7 @@ export default function ProfesionalesContent() {
               <ArrowRight size={16} strokeWidth={1.5} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
-              href="https://wa.me/51999999999?text=Hola! Quiero unirme al ministerio de Profesionales"
+              href="https://wa.me/51932835086?text=Hola! Quiero unirme al ministerio de Profesionales"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[var(--line-strong)] text-[var(--fg)] text-sm font-medium hover:bg-[var(--surface-10)] transition-all"

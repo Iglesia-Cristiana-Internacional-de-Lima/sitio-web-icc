@@ -24,7 +24,7 @@ export default function ProfesionalesPage() {
       <ProfesionalesContent />
       <Footer />
       <WhatsAppButton
-        phoneNumber="51999999999"
+        phoneNumber="51932835086"
         message="Hola! Quiero saber más sobre el ministerio de Profesionales"
       />
     </main>

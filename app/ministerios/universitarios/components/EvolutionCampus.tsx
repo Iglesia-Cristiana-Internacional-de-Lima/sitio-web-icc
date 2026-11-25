@@ -21,7 +21,7 @@ const campuses = [
     description:
       "Cada jueves nos reunimos en el campus para un devocional corto. 30 minutos para reflexionar, compartir y empezar bien la semana.",
     img: "https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80",
-    whatsapp: "51999999999",
+    whatsapp: "51932835086",
   },
   {
     id: "sanmarcos",

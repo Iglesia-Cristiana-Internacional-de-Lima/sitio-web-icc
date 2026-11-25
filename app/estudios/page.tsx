@@ -32,7 +32,7 @@ export default function EstudiosPage() {
       <EstudiosCTA />
       <Footer />
       <WhatsAppButton
-        phoneNumber="51999999999"
+        phoneNumber="51932835086"
         message="Hola! Quiero agendar un estudio bíblico"
       />
     </main>

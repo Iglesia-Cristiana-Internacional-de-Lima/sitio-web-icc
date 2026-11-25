@@ -169,9 +169,9 @@ export default function Footer() {
           <FooterColumn
             title="Contacto"
             links={[
-              { label: "WhatsApp", href: "https://wa.me/51999999999" },
+              { label: "WhatsApp", href: "https://wa.me/51932835086" },
               { label: "Email", href: "mailto:hola@iglesiacristianalima.pe" },
-              { label: "Pedir oración", href: "https://wa.me/51999999999?text=Quiero%20pedir%20oración" },
+              { label: "Pedir oración", href: "https://wa.me/51932835086?text=Quiero%20pedir%20oración" },
               { label: "Visítanos", href: "#sedes" },
             ]}
           />
