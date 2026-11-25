@@ -12,7 +12,7 @@ export function isValidEmail(email: string): boolean {
 
 /**
  * Valida un número de WhatsApp peruano
- * Formatos aceptados: +51999999999, 51999999999, 999999999
+ * Formatos aceptados: +51932835086, 51932835086, 932835086
  */
 export function isValidWhatsApp(phone: string): boolean {
   const cleaned = phone.replace(/[\s\-\(\)]/g, "");

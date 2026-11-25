@@ -22,7 +22,7 @@ type WhatsAppButtonProps = {
 };
 
 export default function WhatsAppButton({
-  phoneNumber = "51999999999", // Peru country code + number (placeholder)
+  phoneNumber = "51932835086", // Peru country code + number (placeholder)
   message = "Hola! Quiero saber más sobre la iglesia",
 }: WhatsAppButtonProps) {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
