@@ -76,10 +76,11 @@ export async function POST(request: Request) {
     // Formatear la fecha del evento
     const formatter = new Intl.DateTimeFormat('es-PE', {
       dateStyle: 'full',
-      timeStyle: 'short',
-      timeZone: 'America/Lima',
+      timeZone: 'UTC',
     });
-    const fechaFormateada = formatter.format(evento.fecha);
+    const fechaFormateada = evento.horaInicio
+      ? `${formatter.format(evento.fecha)}, ${evento.horaInicio}`
+      : formatter.format(evento.fecha);
 
     // 4. Enviar correos y registrar en base de datos
     let enviosExitosos = 0;

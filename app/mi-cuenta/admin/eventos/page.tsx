@@ -16,6 +16,7 @@ interface Evento {
   horaInicio: string | null;
   horaFin: string | null;
   sedeId: number | null;
+  ubicacion: string | null;
   sede: Sede | null;
   destacado: boolean;
   activo: boolean;
@@ -27,7 +28,7 @@ export default function AdminEventosPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Evento | null>(null);
-  const [form, setForm] = useState({ titulo: "", descripcion: "", fecha: "", horaInicio: "", horaFin: "", sedeId: "", destacado: false, activo: true });
+  const [form, setForm] = useState({ titulo: "", descripcion: "", fecha: "", horaInicio: "", horaFin: "", sedeId: "", ubicacion: "", destacado: false, activo: true });
 
   const fetchEventos = () => {
     fetch("/api/admin/eventos")
@@ -46,7 +47,7 @@ export default function AdminEventosPage() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ titulo: "", descripcion: "", fecha: "", horaInicio: "", horaFin: "", sedeId: "", destacado: false, activo: true });
+    setForm({ titulo: "", descripcion: "", fecha: "", horaInicio: "", horaFin: "", sedeId: "", ubicacion: "", destacado: false, activo: true });
     setShowModal(true);
   };
 
@@ -59,6 +60,7 @@ export default function AdminEventosPage() {
       horaInicio: e.horaInicio || "",
       horaFin: e.horaFin || "",
       sedeId: e.sedeId?.toString() || "",
+      ubicacion: e.ubicacion || "",
       destacado: e.destacado,
       activo: e.activo,
     });
@@ -80,7 +82,7 @@ export default function AdminEventosPage() {
     fetchEventos();
   };
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" });
+  const formatDate = (d: string) => new Date(d).toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
   return (
     <div>
@@ -186,6 +188,17 @@ export default function AdminEventosPage() {
                   <option value="">Sin sede específica</option>
                   {sedes.map((s) => <option key={s.id} value={s.id}>{s.nombre}</option>)}
                 </select>
+              </div>
+              <div>
+                <label className="block text-white/60 text-sm mb-2">Dirección / Lugar</label>
+                <input
+                  type="text"
+                  value={form.ubicacion}
+                  onChange={(e) => setForm({ ...form, ubicacion: e.target.value })}
+                  placeholder="Ej: Av. Larco 123, Miraflores · Auditorio piso 2"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white"
+                />
+                <p className="text-white/40 text-xs mt-1">Opcional. Si lo dejas vacío, se usa la dirección de la sede.</p>
               </div>
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 text-white/60 text-sm">

@@ -22,6 +22,7 @@ interface EventoAPI {
   fecha: string;
   horaInicio: string;
   horaFin: string | null;
+  ubicacion: string | null;
   sede: SedeInfo | null;
   imagen: string | null;
   destacado: boolean;
@@ -35,6 +36,7 @@ function formatearFecha(iso: string) {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'UTC',
   };
   return d.toLocaleDateString('es-PE', opciones);
 }
@@ -210,10 +212,13 @@ export default function EventosPage() {
                     <Clock size={14} className="text-[var(--fg-40)] shrink-0" />
                     <span>{formatearHora(evento.horaInicio)}</span>
                   </div>
-                  {evento.sede && (
+                  {(evento.ubicacion || evento.sede) && (
                     <div className="flex items-center gap-2">
                       <MapPin size={14} className="text-[var(--fg-40)] shrink-0" />
-                      <span className="truncate">{evento.sede.nombre} — {evento.sede.direccion}</span>
+                      <span className="truncate">
+                        {evento.sede ? `${evento.sede.nombre} — ` : ""}
+                        {evento.ubicacion || evento.sede?.direccion}
+                      </span>
                     </div>
                   )}
                 </div>

@@ -27,6 +27,7 @@ interface EventoDetalle {
   fecha: string;
   horaInicio: string;
   horaFin: string | null;
+  ubicacion: string | null;
   sede: SedeInfo | null;
   imagen: string | null;
   destacado: boolean;
@@ -40,6 +41,7 @@ function formatearFecha(iso: string) {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
@@ -163,18 +165,20 @@ export default function EventoDetallePage() {
                 </p>
               </div>
             </div>
-            {evento.sede && (
+            {(evento.ubicacion || evento.sede) && (
               <div className="flex items-center gap-3 bg-[var(--bg)] border border-[var(--line)] rounded-xl p-4">
                 <MapPin size={18} className="text-[var(--fg-40)] shrink-0" />
                 <div>
                   <p className="text-[10px] text-[var(--fg-40)] uppercase tracking-wider font-semibold">
                     Ubicación
                   </p>
-                  <p className="text-[var(--fg)] text-sm font-medium">
-                    {evento.sede.nombre}
-                  </p>
+                  {evento.sede && (
+                    <p className="text-[var(--fg)] text-sm font-medium">
+                      {evento.sede.nombre}
+                    </p>
+                  )}
                   <p className="text-[var(--fg-50)] text-xs">
-                    {evento.sede.direccion}
+                    {evento.ubicacion || evento.sede?.direccion}
                   </p>
                 </div>
               </div>
