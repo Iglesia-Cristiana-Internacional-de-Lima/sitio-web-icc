@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       horaInicio: body.horaInicio || null,
       horaFin: body.horaFin || null,
       sedeId: body.sedeId ? parseInt(body.sedeId) : null,
+      ubicacion: body.ubicacion || null,
       imagen: body.imagen || null,
       destacado: body.destacado ?? false,
       activo: body.activo ?? true,

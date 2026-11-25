@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       horaInicio: body.horaInicio || null,
       horaFin: body.horaFin || null,
       sedeId: body.sedeId ? parseInt(body.sedeId) : null,
+      ubicacion: body.ubicacion || null,
       imagen: body.imagen || null,
       destacado: body.destacado,
       activo: body.activo,
