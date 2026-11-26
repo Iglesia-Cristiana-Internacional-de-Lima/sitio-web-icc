@@ -74,7 +74,11 @@ export default function EventosPage() {
 
       {/* Hero */}
       <section className="relative w-full h-screen min-h-[720px] overflow-hidden bg-black">
-        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-800 z-0" />
+        <img
+          src="/images/portada-iglesia-2026.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-transparent to-transparent" />
 
