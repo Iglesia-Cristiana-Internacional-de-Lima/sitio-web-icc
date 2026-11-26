@@ -108,6 +108,14 @@ export default function EventoDetallePage() {
     );
   }
 
+    // Qué mostrar en el mapa: la dirección del evento o, si no hay, las coordenadas de la sede
+  let consultaMapa: string | null = null;
+  if (evento.ubicacion) {
+    consultaMapa = `${evento.ubicacion}, Lima, Perú`;
+  } else if (evento.sede?.lat && evento.sede?.lng) {
+    consultaMapa = `${evento.sede.lat},${evento.sede.lng}`;
+  }
+
   return (
     <main className="bg-[var(--bg)] text-[var(--fg)] pt-24 pb-24 px-4 sm:px-6 lg:px-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -186,11 +194,11 @@ export default function EventoDetallePage() {
           </div>
 
           {/* Mapa */}
-          {evento.sede?.lat && evento.sede?.lng ? (
+          {consultaMapa ? (
             <div className="bg-[var(--bg)] border border-[var(--line)] rounded-xl overflow-hidden">
               <iframe
                 title={`Ubicación de ${evento.titulo}`}
-                src={`https://maps.google.com/maps?q=${evento.sede.lat},${evento.sede.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                                src={`https://maps.google.com/maps?q=${encodeURIComponent(consultaMapa)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                 className="w-full aspect-video"
                 loading="lazy"
                 allowFullScreen
