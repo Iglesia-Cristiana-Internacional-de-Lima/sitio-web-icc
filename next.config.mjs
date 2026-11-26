@@ -13,7 +13,7 @@ const nextConfig = {
     {
       source: "/(.*)",
       headers: [
-        { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https://res.cloudinary.com https://images.unsplash.com data:; font-src 'self'; frame-src https://www.instagram.com https://www.tiktok.com; connect-src 'self'" },
+        { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https://res.cloudinary.com https://images.unsplash.com data:; font-src 'self'; frame-src https://www.instagram.com https://www.tiktok.com https://maps.google.com https://www.google.com; connect-src 'self'" },
       ],
     },
   ],
